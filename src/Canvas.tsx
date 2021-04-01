@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useCanvasContext } from './hooks/useCanvasContext'
 import { useOnPasteImage } from './hooks/useOnPasteImage'
-import { useKeyPress } from 'ahooks'
+import { useKeyPress } from './hooks/useKeyPress'
+
+const FOCUSED_COLOR = '#fb5211'
+const ELEMENT_COLOR = '#e91e63'
 
 function roundedRect(
   ctx: CanvasRenderingContext2D,
@@ -10,10 +13,11 @@ function roundedRect(
   width: number,
   height: number,
   radius: number,
+  isFocused?: boolean,
 ) {
   ctx.beginPath()
-  ctx.lineWidth = 4
-  ctx.strokeStyle = 'red'
+  ctx.lineWidth = 8
+  ctx.strokeStyle = isFocused ? FOCUSED_COLOR : ELEMENT_COLOR
   ctx.moveTo(x, y + radius)
   ctx.lineTo(x, y + height - radius)
   ctx.arcTo(x, y + height, x + radius, y + height, radius)
@@ -44,203 +48,47 @@ function isRectangle(e: any): e is Rectangle {
   return e.w !== undefined
 }
 
+function isText(e: any): e is Text {
+  return e.content !== undefined
+}
+
 type RenderedElement = Rectangle | Text
 
-const DEFAULT_DIFF = 20
+const SMALL_DIFF = 10
+const BIG_DIFF = 30
 
 export function Canvas() {
   const canvasRef = useRef<any>(null)
   const [elements, setElements] = useState<RenderedElement[]>([])
-  const [focusedRectangleIndex, setFocusedRectangleIndex] = useState(0)
+  const [focusedElementIndex, setFocsedElementIndex] = useState(0)
+  const [isFocus, setIsFocus] = useState(false)
+  const [isInputVisilble, setIsInputVisible] = useState(false)
 
-  const img = useOnPasteImage((img: HTMLImageElement) => {
-    const ctx = getContext()
-    const canvas = canvasRef.current
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.drawImage(img, 0, 0)
-    canvas.width = img.width
-    canvas.height = img.height
-  })
+  const img = useOnPasteImage()
 
-  useEffect(() => {
-    const ctx = getContext()
-    const canvas = canvasRef.current
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.drawImage(img, 0, 0)
-    for (const element of elements) {
-      if (isRectangle(element)) {
-        roundedRect(ctx, element.x, element.y, element.w, element.h, 3)
+  const onSubmit = useCallback((event: any) => {
+    event.preventDefault()
+    setIsInputVisible(false)
+  }, [])
+
+  const onChangeText = useCallback(
+    (event: any) => {
+      const focusedElement = elements[focusedElementIndex]
+      if (isText(focusedElement)) {
+        setElements(
+          elements.map((element, idx) =>
+            idx === focusedElementIndex
+              ? {
+                  ...element,
+                  content: event.target.value,
+                }
+              : element,
+          ),
+        )
       }
-    }
-  }, [elements, img])
-
-  useKeyPress('r', () => {
-    const { width, height } = canvasRef.current
-    setElements([
-      ...elements,
-      {
-        x: width / 3,
-        y: height / 3,
-        w: width / 3,
-        h: height / 3,
-      },
-    ])
-  })
-
-  useKeyPress('j', () => {
-    setFocusedRectangleIndex(
-      Math.min(elements.length, focusedRectangleIndex + 1),
-    )
-  })
-
-  useKeyPress('k', () => {
-    setFocusedRectangleIndex(
-      Math.min(elements.length, focusedRectangleIndex - 1),
-    )
-  })
-
-  useKeyPress(['ctrl.f', 'right', 'l'], (event) => {
-    if (event.shiftKey) {
-      return
-    }
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex
-          ? {
-              ...element,
-              x: element.x + DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['ctrl.n', 'down', 'n'], (event) => {
-    if (event.shiftKey) {
-      return
-    }
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex
-          ? {
-              ...element,
-              y: element.y + DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['ctrl.b', 'left', 'b'], (event) => {
-    if (event.shiftKey) {
-      return
-    }
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex
-          ? {
-              ...element,
-              x: element.x - DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['ctrl.p', 'up', 'p'], (event) => {
-    if (event.shiftKey) {
-      return
-    }
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex
-          ? {
-              ...element,
-              y: element.y - DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['ctrl.a', 'home', '0'], () => {
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex
-          ? {
-              ...element,
-              x: 0,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['ctrl.e', 'end', '$'], () => {
-    const { width } = canvasRef.current
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex && isRectangle(element)
-          ? {
-              ...element,
-              x: width - element.w,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['shift.left'], () => {
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex && isRectangle(element)
-          ? {
-              ...element,
-              w: element.w - DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['shift.right'], () => {
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex && isRectangle(element)
-          ? {
-              ...element,
-              w: element.w + DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['shift.up'], () => {
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex && isRectangle(element)
-          ? {
-              ...element,
-              h: element.h - DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
-
-  useKeyPress(['shift.down'], () => {
-    setElements(
-      elements.map((element, idx) =>
-        idx === focusedRectangleIndex && isRectangle(element)
-          ? {
-              ...element,
-              h: element.h + DEFAULT_DIFF,
-            }
-          : element,
-      ),
-    )
-  })
+    },
+    [elements, focusedElementIndex],
+  )
 
   useKeyPress(['ctrl.c'], () => {
     const canvas = canvasRef.current
@@ -254,7 +102,374 @@ export function Canvas() {
     })
   })
 
+  useKeyPress(['r'], () => {
+    const { width, height } = canvasRef.current
+    setElements([
+      ...elements,
+      {
+        x: width / 3,
+        y: height / 3,
+        w: width / 3,
+        h: height / 3,
+      },
+    ])
+    setFocsedElementIndex(elements.length)
+    setIsFocus(true)
+  })
+
+  useKeyPress(['t'], () => {
+    const { width, height } = canvasRef.current
+    const focusedElement = elements[focusedElementIndex]
+    let x = width / 3
+    let y = height / 3
+    if (focusedElement) {
+      x = focusedElement.x
+      y = focusedElement.y - 20
+    }
+    setElements([
+      ...elements,
+      {
+        x,
+        y,
+        content: 'Content...',
+      },
+    ])
+    setFocsedElementIndex(elements.length)
+    setIsFocus(true)
+  })
+
+  useKeyPress(['Escape'], () => {
+    setIsFocus(false)
+  })
+
+  useKeyPress(['Enter', 'Return', 'i'], () => {
+    setIsFocus(true)
+    const focusedElement = elements[focusedElementIndex]
+    if (isText(focusedElement)) {
+      // Adding delay prevents to inserting "i"
+      setTimeout(() => {
+        setIsInputVisible(true)
+      }, 10)
+    }
+  })
+
+  useKeyPress(['o'], () => {
+    setIsFocus(true)
+    if (focusedElementIndex === elements.length - 1) {
+      setFocsedElementIndex(0)
+    } else {
+      setFocsedElementIndex(focusedElementIndex + 1)
+    }
+  })
+
+  useKeyPress(['l', 'ctrl.ArrowRight'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              x: element.x + SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['h', 'ctrl.ArrowLeft'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              x: element.x - SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['j', 'ctrl.ArrowDown'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              y: element.y + SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['k', 'ctrl.ArrowUp'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              y: element.y - SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.f', 'ArrowRight'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              x: element.x + BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.b', 'ArrowLeft'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              x: element.x - BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.n', 'ArrowDown'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              y: element.y + BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.p', 'ArrowUp'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              y: element.y - BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['0', 'ctrl.a', 'Home'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              x: 0,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['$', 'ctrl.e', 'End'], () => {
+    const { width } = canvasRef.current
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              x: width - element.w,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['g', 'ctrl.meta.a', 'ctrl.Home'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex
+          ? {
+              ...element,
+              y: 0,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['G', 'ctrl.meta.e', 'ctrl.End'], () => {
+    const { height } = canvasRef.current
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              y: height - element.h,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['d', 'x', 'Backspace', 'Delete'], () => {
+    if (isFocus) {
+      setElements(elements.filter((_, idx) => idx !== focusedElementIndex))
+    }
+  })
+
+  useKeyPress(['shift.L', 'shift.ArrowRight'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              w: element.w + BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['shift.H', 'shift.ArrowLeft'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              w: element.w - BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['shift.K', 'shift.ArrowUp'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              h: element.h - BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['shift.J', 'shift.ArrowDown'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              h: element.h + BIG_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.shift.ArrowRight'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              w: element.w + SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.shift.ArrowLeft'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              w: element.w - SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.shift.ArrowUp'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              h: element.h - SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['ctrl.shift.ArrowDown'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isRectangle(element)
+          ? {
+              ...element,
+              h: element.h + SMALL_DIFF,
+            }
+          : element,
+      ),
+    )
+  })
+
   const getContext = useCanvasContext(canvasRef)
 
-  return <canvas ref={canvasRef} />
+  useEffect(() => {
+    const ctx = getContext()
+    const canvas = canvasRef.current
+    canvas.width = img.width
+    canvas.height = img.height
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(img, 0, 0)
+    elements.forEach((element, index) => {
+      if (isRectangle(element)) {
+        roundedRect(
+          ctx,
+          element.x,
+          element.y,
+          element.w,
+          element.h,
+          3,
+          isFocus && index === focusedElementIndex,
+        )
+      }
+      if (isText(element)) {
+        ctx.font = 'bold 48px sans-serif'
+        ctx.fillStyle =
+          isFocus && index === focusedElementIndex
+            ? FOCUSED_COLOR
+            : ELEMENT_COLOR
+        ctx.fillText(element.content, element.x, element.y)
+      }
+    })
+  }, [elements, img, focusedElementIndex, isFocus, getContext])
+
+  return (
+    <>
+      <canvas ref={canvasRef} />
+      {isInputVisilble && (
+        <form onSubmit={onSubmit}>
+          <input onChange={onChangeText} autoFocus />
+        </form>
+      )}
+    </>
+  )
 }

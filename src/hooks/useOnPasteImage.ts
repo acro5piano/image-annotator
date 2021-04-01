@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-export function useOnPasteImage(callback: (img: HTMLImageElement) => any) {
+export function useOnPasteImage(callback?: (img: HTMLImageElement) => any) {
   const [image, setImage] = useState(new Image())
 
   useEffect(() => {
-    document.addEventListener('paste', async (event) => {
+    const onPaste = (event: ClipboardEvent) => {
       event.preventDefault()
       event.stopPropagation()
       const file = event?.clipboardData?.items[0]?.getAsFile()
@@ -19,14 +19,19 @@ export function useOnPasteImage(callback: (img: HTMLImageElement) => any) {
       img.onload = function () {
         // Draw the image
         setImage(img)
-        callback(img)
+        if (callback) {
+          callback(img)
+        }
       }
 
       // Creates a DOMString containing a URL representing the object given in the parameter
       // namely the original Blob
       img.src = URL.createObjectURL(file)
-    })
-  }, [])
+    }
+
+    document.addEventListener('paste', onPaste)
+    return () => document.removeEventListener('paste', onPaste)
+  }, [callback])
 
   return image
 }

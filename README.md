@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d965a765-5e54-4b61-9fc6-6cc57f60fc43/deploy-status)](https://app.netlify.com/sites/awesome-image-annotator/deploys)
+
 # annotate-image
 
 A tool to annotate image by keyboard. Especially useful when you add some description to a cropped screenshot.

@@ -2,7 +2,7 @@
 
 # Image Annotator
 
-A tool to edit image by keyboard. Especially useful when you add some description to a cropped screenshot.
+A tool to edit images by keyboard. Especially useful when you add some description to a cropped screenshot.
 
 # Concept
 

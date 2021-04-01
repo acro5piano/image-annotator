@@ -8,7 +8,7 @@ export function App() {
         <a
           href="https://github.com/acro5piano/image-annotator"
           target="_blank"
-          rel="noopener noreferer"
+          rel="noopener noreferrer"
           className="px-2 py-1 text-white hover:bg-indigo-700 rounded"
         >
           GitHub

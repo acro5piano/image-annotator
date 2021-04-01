@@ -1,6 +1,17 @@
-# annotate-photo
+# annotate-image
 
-A tool to annotate photo by keyboard.
+A tool to annotate image by keyboard. Especially useful when you add some description to a cropped screenshot.
+
+# Concept
+
+- **Productive** Edit photo only with keyboard, meaning you don't have to touch your mouse.
+- **Fast** Use best practice of recent web technologies
+- **Cross-platform** Works on all modern browsers
+- **Secure** No upload, no permission
+
+# Usage
+
+Go to the website, and copy your image from clipboard.
 
 # Shortcuts
 

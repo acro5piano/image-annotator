@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import clsx from 'clsx'
 import { useCanvasContext } from './hooks/useCanvasContext'
 import { useOnPasteImage } from './hooks/useOnPasteImage'
 import { useKeyPress } from './hooks/useKeyPress'
@@ -42,6 +43,7 @@ interface Rectangle extends CanvasElement {
 
 interface Text extends CanvasElement {
   content: string
+  fontSize: number
 }
 
 function isRectangle(e: any): e is Rectangle {
@@ -63,8 +65,12 @@ export function Canvas() {
   const [focusedElementIndex, setFocsedElementIndex] = useState(0)
   const [isFocus, setIsFocus] = useState(false)
   const [isInputVisilble, setIsInputVisible] = useState(false)
+  const [isPasted, setIsPasted] = useState(false)
+  const [copied, setCopied] = useState(false)
 
-  const img = useOnPasteImage()
+  const img = useOnPasteImage(() => {
+    setIsPasted(true)
+  })
 
   const onSubmit = useCallback((event: any) => {
     event.preventDefault()
@@ -93,12 +99,17 @@ export function Canvas() {
   useKeyPress(['ctrl.c'], () => {
     const canvas = canvasRef.current
 
-    // This works only on chrome?
+    // This works only on the latest chrome?
     canvas.toBlob((blob: any) => {
       // @ts-ignore
       const item = new ClipboardItem({ 'image/png': blob })
       // @ts-ignore
       navigator.clipboard.write([item])
+
+      setCopied(true)
+      setTimeout(() => {
+        setCopied(false)
+      }, 4000)
     })
   })
 
@@ -132,6 +143,7 @@ export function Canvas() {
         x,
         y,
         content: 'Content...',
+        fontSize: 48,
       },
     ])
     setFocsedElementIndex(elements.length)
@@ -160,6 +172,32 @@ export function Canvas() {
     } else {
       setFocsedElementIndex(focusedElementIndex + 1)
     }
+  })
+
+  useKeyPress(['shift.>'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isText(element)
+          ? {
+              ...element,
+              fontSize: element.fontSize + 2,
+            }
+          : element,
+      ),
+    )
+  })
+
+  useKeyPress(['shift.<'], () => {
+    setElements(
+      elements.map((element, idx) =>
+        idx === focusedElementIndex && isText(element)
+          ? {
+              ...element,
+              fontSize: Math.max(0, element.fontSize - 2),
+            }
+          : element,
+      ),
+    )
   })
 
   useKeyPress(['l', 'ctrl.ArrowRight'], () => {
@@ -452,7 +490,7 @@ export function Canvas() {
         )
       }
       if (isText(element)) {
-        ctx.font = 'bold 48px sans-serif'
+        ctx.font = `bold ${element.fontSize}px sans-serif`
         ctx.fillStyle =
           isFocus && index === focusedElementIndex
             ? FOCUSED_COLOR
@@ -464,12 +502,34 @@ export function Canvas() {
 
   return (
     <>
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} className="canvas" />
+      {!isPasted && (
+        <div className="border border-gray-400 bg-white flex justify-center items-center rounded paste-image-here">
+          <span>Please paste image to edit</span>
+        </div>
+      )}
       {isInputVisilble && (
         <form onSubmit={onSubmit}>
           <input onChange={onChangeText} autoFocus />
         </form>
       )}
+      <div
+        className={clsx('fixed bottom-0 left-0 pb-2 pl-4 transition-all', {
+          '-mb-12': !copied,
+          'mb-0': copied,
+        })}
+      >
+        <div
+          className={clsx(
+            'mx-auto bg-gray-900 text-white rounded py-4 px-8 transition-all',
+            {
+              '-mb-96': !copied,
+            },
+          )}
+        >
+          Copied to clipboard
+        </div>
+      </div>
     </>
   )
 }

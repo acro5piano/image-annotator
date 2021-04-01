@@ -5,9 +5,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #e5e5e5;
+  min-height: 100vh;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.paste-image-here {
+  height: 80vh;
+  font-size: 48px;
+}
+
+.canvas {
+  margin: 24px auto 0;
 }

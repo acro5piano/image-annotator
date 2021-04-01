@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 export function useOnPasteImage(callback?: (img: HTMLImageElement) => any) {
-  const [image, setImage] = useState(new Image())
+  const [image, setImage] = useState<HTMLImageElement>(new Image())
 
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {

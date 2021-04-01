@@ -52,6 +52,8 @@ Go to the website, and copy your image from clipboard.
 
 # Screenshots
 
-![image](https://user-images.githubusercontent.com/10719495/113316097-81620d00-92fd-11eb-8157-6a7aaddaf544.png)
+![image](https://user-images.githubusercontent.com/10719495/113324468-a909a300-9306-11eb-9b34-83a8f199be98.png)
+
+![image](https://user-images.githubusercontent.com/10719495/113324768-07368600-9307-11eb-801f-1052370db16d.png)
 
 ![image](https://user-images.githubusercontent.com/10719495/113316314-b706f600-92fd-11eb-8f83-e11dfd4f9a94.png)

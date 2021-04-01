@@ -148,6 +148,9 @@ export function Canvas() {
     ])
     setFocsedElementIndex(elements.length)
     setIsFocus(true)
+    setTimeout(() => {
+      setIsInputVisible(true)
+    }, 10)
   })
 
   useKeyPress(['Escape'], () => {
@@ -174,7 +177,7 @@ export function Canvas() {
     }
   })
 
-  useKeyPress(['shift.>'], () => {
+  useKeyPress(['shift.>', 'ctrl.shift.>'], () => {
     setElements(
       elements.map((element, idx) =>
         idx === focusedElementIndex && isText(element)
@@ -187,7 +190,7 @@ export function Canvas() {
     )
   })
 
-  useKeyPress(['shift.<'], () => {
+  useKeyPress(['shift.<', 'ctrl.shift.<'], () => {
     setElements(
       elements.map((element, idx) =>
         idx === focusedElementIndex && isText(element)

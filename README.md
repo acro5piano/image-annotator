@@ -47,6 +47,8 @@ Go to the website, and copy your image from clipboard.
 | Ctrl + Shift + Arrow Down         | Increase current element height 10                                                    |
 | Ctrl + Shift + Arrow Up           | Decrease current element height 10                                                    |
 | x / Backspace / Delete            | Delete current element                                                                |
+| `>` / ctrl + `>`                  | Increase font size                                                                    |
+| `<` / ctrl + `<`                  | Decrease font size                                                                    |
 
 # Screenshots
 

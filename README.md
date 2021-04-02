@@ -19,6 +19,7 @@ Go to the website, and copy your image from clipboard.
 
 | Key                               | Description                                                                          |
 | --------------------------------- | ------------------------------------------------------------------------------------ |
+| ?                                 | Open the cheatsheet                                                                  |
 | C-v                               | Paste the image from clipboard to the canvas                                         |
 | C-c                               | Copy the image on the canvas to clipboard                                            |
 | r                                 | Add a rectangle on the canvas                                                        |

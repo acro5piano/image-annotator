@@ -1,72 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import clsx from 'clsx'
-import { useCanvasContext } from './hooks/useCanvasContext'
-import { useOnPasteImage } from './hooks/useOnPasteImage'
-import { useKeyPress } from './hooks/useKeyPress'
+import { useLocalStorageState } from 'ahooks'
+import { useCanvasContext } from '../hooks/useCanvasContext'
+import { useOnPasteImage } from '../hooks/useOnPasteImage'
+import { useKeyPress } from '../hooks/useKeyPress'
+import { getElementDimension, drawRoundedRect, drawText } from '../utils/canvas'
+import { Popover } from './Popover'
+import * as t from '../types'
 
-const FOCUSED_COLOR = '#fb5211'
-const ELEMENT_COLOR = '#e91e63'
-
-function roundedRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-  isFocused?: boolean,
-) {
-  ctx.beginPath()
-  ctx.lineWidth = 8
-  ctx.strokeStyle = isFocused ? FOCUSED_COLOR : ELEMENT_COLOR
-  ctx.moveTo(x, y + radius)
-  ctx.lineTo(x, y + height - radius)
-  ctx.arcTo(x, y + height, x + radius, y + height, radius)
-  ctx.lineTo(x + width - radius, y + height)
-  ctx.arcTo(x + width, y + height, x + width, y + height - radius, radius)
-  ctx.lineTo(x + width, y + radius)
-  ctx.arcTo(x + width, y, x + width - radius, y, radius)
-  ctx.lineTo(x + radius, y)
-  ctx.arcTo(x, y, x, y + radius, radius)
-  ctx.stroke()
-}
-
-interface CanvasElement {
-  x: number
-  y: number
-}
-
-interface Rectangle extends CanvasElement {
-  w: number
-  h: number
-}
-
-interface Text extends CanvasElement {
-  content: string
-  fontSize: number
-}
-
-function isRectangle(e: any): e is Rectangle {
-  return e.w !== undefined
-}
-
-function isText(e: any): e is Text {
-  return e.content !== undefined
-}
-
-type RenderedElement = Rectangle | Text
-
-const SMALL_DIFF = 10
-const BIG_DIFF = 30
+const DEFAULT_SMALL_DIFF = 10
+const DEFAULT_LARGE_DIFF = 30
+const DEFAULT_RECT_ROUND = 3
 
 export function Canvas() {
   const canvasRef = useRef<any>(null)
-  const [elements, setElements] = useState<RenderedElement[]>([])
+  const [elements, setElements] = useState<t.RenderedElement[]>([])
   const [focusedElementIndex, setFocsedElementIndex] = useState(0)
   const [isFocus, setIsFocus] = useState(false)
   const [isInputVisilble, setIsInputVisible] = useState(false)
   const [isPasted, setIsPasted] = useState(false)
   const [copied, setCopied] = useState(false)
+
+  // TODO: make them configurable
+  const [smallDiff = DEFAULT_SMALL_DIFF] = useLocalStorageState(
+    'ia:smallDiff',
+    DEFAULT_SMALL_DIFF,
+  )
+  const [largeDiff = DEFAULT_LARGE_DIFF] = useLocalStorageState(
+    'ia:largeDiff',
+    DEFAULT_LARGE_DIFF,
+  )
 
   const img = useOnPasteImage(() => {
     setIsPasted(true)
@@ -80,7 +42,7 @@ export function Canvas() {
   const onChangeText = useCallback(
     (event: any) => {
       const focusedElement = elements[focusedElementIndex]
-      if (isText(focusedElement)) {
+      if (t.isText(focusedElement)) {
         setElements(
           elements.map((element, idx) =>
             idx === focusedElementIndex
@@ -143,7 +105,7 @@ export function Canvas() {
         x,
         y,
         content: 'Content...',
-        fontSize: 48,
+        fontSize: 36,
       },
     ])
     setFocsedElementIndex(elements.length)
@@ -160,7 +122,7 @@ export function Canvas() {
   useKeyPress(['Enter', 'Return', 'i'], () => {
     setIsFocus(true)
     const focusedElement = elements[focusedElementIndex]
-    if (isText(focusedElement)) {
+    if (t.isText(focusedElement)) {
       // Adding delay prevents to inserting "i"
       setTimeout(() => {
         setIsInputVisible(true)
@@ -180,7 +142,7 @@ export function Canvas() {
   useKeyPress(['shift.>', 'ctrl.shift.>'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isText(element)
+        idx === focusedElementIndex && t.isText(element)
           ? {
               ...element,
               fontSize: element.fontSize + 2,
@@ -193,7 +155,7 @@ export function Canvas() {
   useKeyPress(['shift.<', 'ctrl.shift.<'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isText(element)
+        idx === focusedElementIndex && t.isText(element)
           ? {
               ...element,
               fontSize: Math.max(0, element.fontSize - 2),
@@ -209,7 +171,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x + SMALL_DIFF,
+              x: element.x + smallDiff,
             }
           : element,
       ),
@@ -222,7 +184,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x - SMALL_DIFF,
+              x: element.x - smallDiff,
             }
           : element,
       ),
@@ -235,7 +197,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y + SMALL_DIFF,
+              y: element.y + smallDiff,
             }
           : element,
       ),
@@ -248,7 +210,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y - SMALL_DIFF,
+              y: element.y - smallDiff,
             }
           : element,
       ),
@@ -261,7 +223,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x + BIG_DIFF,
+              x: element.x + largeDiff,
             }
           : element,
       ),
@@ -274,7 +236,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x - BIG_DIFF,
+              x: element.x - largeDiff,
             }
           : element,
       ),
@@ -287,7 +249,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y + BIG_DIFF,
+              y: element.y + largeDiff,
             }
           : element,
       ),
@@ -300,7 +262,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y - BIG_DIFF,
+              y: element.y - largeDiff,
             }
           : element,
       ),
@@ -324,10 +286,10 @@ export function Canvas() {
     const { width } = canvasRef.current
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex
           ? {
               ...element,
-              x: width - element.w,
+              x: width - getElementDimension(element).w,
             }
           : element,
       ),
@@ -340,7 +302,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: 0,
+              y: 20,
             }
           : element,
       ),
@@ -351,29 +313,30 @@ export function Canvas() {
     const { height } = canvasRef.current
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex
           ? {
               ...element,
-              y: height - element.h,
+              y: height - getElementDimension(element).h,
             }
           : element,
       ),
     )
   })
 
-  useKeyPress(['d', 'x', 'Backspace', 'Delete'], () => {
+  useKeyPress(['d', 'ctrl.h', 'x', 'Backspace', 'Delete'], () => {
     if (isFocus) {
       setElements(elements.filter((_, idx) => idx !== focusedElementIndex))
+      setFocsedElementIndex(focusedElementIndex - 1)
     }
   })
 
   useKeyPress(['shift.L', 'shift.ArrowRight'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w + BIG_DIFF,
+              w: element.w + largeDiff,
             }
           : element,
       ),
@@ -383,10 +346,10 @@ export function Canvas() {
   useKeyPress(['shift.H', 'shift.ArrowLeft'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w - BIG_DIFF,
+              w: element.w - largeDiff,
             }
           : element,
       ),
@@ -396,10 +359,10 @@ export function Canvas() {
   useKeyPress(['shift.K', 'shift.ArrowUp'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h - BIG_DIFF,
+              h: element.h - largeDiff,
             }
           : element,
       ),
@@ -409,10 +372,10 @@ export function Canvas() {
   useKeyPress(['shift.J', 'shift.ArrowDown'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h + BIG_DIFF,
+              h: element.h + largeDiff,
             }
           : element,
       ),
@@ -422,10 +385,10 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowRight'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w + SMALL_DIFF,
+              w: element.w + smallDiff,
             }
           : element,
       ),
@@ -435,10 +398,10 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowLeft'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w - SMALL_DIFF,
+              w: element.w - smallDiff,
             }
           : element,
       ),
@@ -448,10 +411,10 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowUp'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h - SMALL_DIFF,
+              h: element.h - smallDiff,
             }
           : element,
       ),
@@ -461,10 +424,10 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowDown'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && isRectangle(element)
+        idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h + SMALL_DIFF,
+              h: element.h + smallDiff,
             }
           : element,
       ),
@@ -481,24 +444,26 @@ export function Canvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.drawImage(img, 0, 0)
     elements.forEach((element, index) => {
-      if (isRectangle(element)) {
-        roundedRect(
+      if (t.isRectangle(element)) {
+        drawRoundedRect(
           ctx,
           element.x,
           element.y,
           element.w,
           element.h,
-          3,
+          DEFAULT_RECT_ROUND,
           isFocus && index === focusedElementIndex,
         )
       }
-      if (isText(element)) {
-        ctx.font = `bold ${element.fontSize}px sans-serif`
-        ctx.fillStyle =
-          isFocus && index === focusedElementIndex
-            ? FOCUSED_COLOR
-            : ELEMENT_COLOR
-        ctx.fillText(element.content, element.x, element.y)
+      if (t.isText(element)) {
+        drawText(
+          ctx,
+          element.x,
+          element.y,
+          element.fontSize,
+          element.content,
+          isFocus && index === focusedElementIndex,
+        )
       }
     })
   }, [elements, img, focusedElementIndex, isFocus, getContext])
@@ -516,23 +481,7 @@ export function Canvas() {
           <input onChange={onChangeText} autoFocus />
         </form>
       )}
-      <div
-        className={clsx('fixed bottom-0 left-0 pb-2 pl-4 transition-all', {
-          '-mb-12': !copied,
-          'mb-0': copied,
-        })}
-      >
-        <div
-          className={clsx(
-            'mx-auto bg-gray-900 text-white rounded py-4 px-8 transition-all',
-            {
-              '-mb-96': !copied,
-            },
-          )}
-        >
-          Copied to clipboard
-        </div>
-      </div>
+      <Popover visible={copied} message="Copied to clipboard" />
     </>
   )
 }

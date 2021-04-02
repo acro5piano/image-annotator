@@ -13,11 +13,11 @@ export function App() {
 
   return (
     <div>
-      <nav className="px-8 py-2 bg-indigo-600 flex justify-between items-center fixed top-0 w-full">
+      <nav className="px-8 py-2 bg-indigo-600 flex justify-between items-center fixed top-0 w-full text-xl">
         <div className="text-white">Image Annotator</div>
         <div className="flex items-center">
           <div
-            className="text-white cursor-pointe flex items-center"
+            className="text-white cursor-pointe flex items-center text-white hover:bg-indigo-700 hover:text-white px-2 py-1 cursor-pointer"
             onClick={() => setIsHelpVisible(true)}
           >
             How to use
@@ -27,13 +27,13 @@ export function App() {
             href="https://github.com/acro5piano/image-annotator"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-8 px-2 py-1 text-white hover:bg-indigo-700 rounded"
+            className="ml-8 px-2 py-1 text-white hover:bg-indigo-700 hover:text-white rounded"
           >
             GitHub
           </a>
         </div>
       </nav>
-      <div className="p-8">
+      <div className="pt-16 p-8">
         <Canvas />
       </div>
       <Help

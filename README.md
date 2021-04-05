@@ -1,3 +1,5 @@
+![image](./public/logo192.png)
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d965a765-5e54-4b61-9fc6-6cc57f60fc43/deploy-status)](https://app.netlify.com/sites/awesome-image-annotator/deploys)
 
 # Image Annotator

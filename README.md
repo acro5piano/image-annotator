@@ -13,7 +13,9 @@ A tool to edit images by keyboard. Especially useful when you add some descripti
 
 # Usage
 
-Go to the website, and copy your image from clipboard.
+Go to the website, and paste your image from clipboard.
+
+https://image-annotator.com
 
 # Shortcuts
 

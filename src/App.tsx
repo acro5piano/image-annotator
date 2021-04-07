@@ -1,15 +1,23 @@
 import { Canvas } from './components/Canvas'
+import { useState } from 'react'
 import { useLocalStorageState } from 'ahooks'
 import { Help } from './components/Help'
+import { QuickHelp } from './components/QuickHelp'
 import { useKeyPress } from './hooks/useKeyPress'
+import { useOnPasteImage } from './hooks/useOnPasteImage'
 
 export function App() {
   const [isHelpVisible, setIsHelpVisible] = useLocalStorageState(
     'ia:isHelpVisible',
     true,
   )
+  const [isQuickHelpVisible, setIsQuickHelpVisible] = useState(false)
   useKeyPress(['shift.?'], () => setIsHelpVisible(true))
   useKeyPress(['Escape'], () => setIsHelpVisible(false))
+
+  useOnPasteImage(() => {
+    setIsQuickHelpVisible(true)
+  })
 
   return (
     <div>
@@ -36,6 +44,7 @@ export function App() {
       <div className="pt-16 p-8">
         <Canvas />
       </div>
+      {isQuickHelpVisible && <QuickHelp />}
       <Help
         visible={isHelpVisible || false}
         onClose={() => setIsHelpVisible(false)}

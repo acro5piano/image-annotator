@@ -24,10 +24,4 @@ jobs:
       - run: |
           yarn install
           yarn lint
-          yarn format
           yarn tsc
-          yarn test:coverage
-          yarn test-d
-          yarn codecov -t $CODECOV_TOKEN
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

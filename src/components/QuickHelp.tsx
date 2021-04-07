@@ -5,7 +5,7 @@ const Desc = ({ k, desc }: { k: string; desc: string }) => (
   </>
 )
 
-export function QuickHelp({}: {}) {
+export function QuickHelp() {
   return (
     <div className="fixed left-0 bottom-0 w-full py-2">
       <div className="flex items-center justify-end">

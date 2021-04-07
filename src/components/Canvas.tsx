@@ -434,6 +434,39 @@ export function Canvas() {
     )
   })
 
+  useKeyPress(['ctrl.u'], (e) => {
+    e.preventDefault()
+
+    const canvas = canvasRef.current
+
+    // This works only on the latest chrome?
+    canvas.toBlob((blob: any) => {
+      const formData = new FormData()
+      formData.append('image', blob)
+      fetch('https://api.imgur.com/3/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          // @ts-ignore
+          Authorization: 'Client-ID xxxxxx',
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res)
+        })
+      // @ts-ignore
+      const item = new ClipboardItem({ 'image/png': blob })
+      // @ts-ignore
+      navigator.clipboard.write([item])
+
+      setCopied(true)
+      setTimeout(() => {
+        setCopied(false)
+      }, 4000)
+    })
+  })
+
   const getContext = useCanvasContext(canvasRef)
 
   useEffect(() => {

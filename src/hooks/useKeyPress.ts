@@ -4,7 +4,10 @@ function plain(s: string) {
   return s.replace('ctrl.', '').replace('meta.', '').replace('shift.', '')
 }
 
-export function useKeyPress(keys: string[], callback: () => void) {
+export function useKeyPress(
+  keys: string[],
+  callback: (event: KeyboardEvent) => void,
+) {
   const [inputing, setInputing] = useState(false)
 
   useEffect(() => {
@@ -37,7 +40,7 @@ export function useKeyPress(keys: string[], callback: () => void) {
         ) {
           return false
         }
-        callback()
+        callback(event)
         return true
       })
     }

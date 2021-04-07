@@ -58,7 +58,7 @@ export function Canvas() {
     [elements, focusedElementIndex],
   )
 
-  useKeyPress(['ctrl.c'], () => {
+  useKeyPress(['ctrl.c', 'meta.c'], () => {
     const canvas = canvasRef.current
 
     // This works only on the latest chrome?

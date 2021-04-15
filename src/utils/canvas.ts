@@ -35,9 +35,16 @@ export function drawText(
   content: string,
   isFocused?: boolean,
 ) {
-  ctx.font = `bold ${fontSize}px sans-serif`
+  ctx.font = `bold ${fontSize}px sans`
+
   ctx.fillStyle = isFocused ? FOCUSED_COLOR : ELEMENT_COLOR
   ctx.fillText(content, x, y)
+
+  ctx.strokeStyle = '#fff'
+  ctx.lineWidth = fontSize / 37
+  ctx.lineCap = 'round'
+
+  ctx.strokeText(content, x, y)
 }
 
 export function getElementDimension(elm: t.RenderedElement) {

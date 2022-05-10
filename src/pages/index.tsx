@@ -81,14 +81,18 @@ export default function Page() {
         {typeof window !== 'undefined' && <Canvas />}
       </div>
       {isQuickHelpVisible && <QuickHelp />}
-      <Help
-        visible={isHelpVisible! && isInitialized}
-        onClose={() => setIsHelpVisible(false)}
-      />
-      <Settings
-        visible={isSettingsVisible || false}
-        onClose={() => setIsSettingsVisible(false)}
-      />
+      {isInitialized && (
+        <Help
+          visible={isHelpVisible!}
+          onClose={() => setIsHelpVisible(false)}
+        />
+      )}
+      {isInitialized && (
+        <Settings
+          visible={isSettingsVisible || false}
+          onClose={() => setIsSettingsVisible(false)}
+        />
+      )}
 
       <Toaster
         position="top-center"

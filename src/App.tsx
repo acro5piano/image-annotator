@@ -1,13 +1,19 @@
 import { Canvas } from './components/Canvas'
 import { useState } from 'react'
-import { useLocalStorageState } from 'ahooks'
+import { useLocalStorageState, useMount } from 'ahooks'
 import { Help } from './components/Help'
 import { Settings } from './components/Settings'
 import { QuickHelp } from './components/QuickHelp'
 import { useKeyPress } from './hooks/useKeyPress'
 import { useOnPasteImage } from './hooks/useOnPasteImage'
+import { useStore } from './store'
+import { Toaster } from 'react-hot-toast'
 
 export function App() {
+  const initApplication = useStore((store) => store.initApplication)
+
+  useMount(initApplication)
+
   const [isHelpVisible, setIsHelpVisible] = useLocalStorageState(
     'ia:isHelpVisible',
     true,
@@ -81,6 +87,20 @@ export function App() {
       <Settings
         visible={isSettingsVisible || false}
         onClose={() => setIsSettingsVisible(false)}
+      />
+
+      <Toaster
+        position="top-center"
+        containerStyle={{
+          zIndex: 9999999,
+        }}
+        toastOptions={{
+          style: {
+            backgroundColor: '#2A2F39',
+            color: '#fff',
+          },
+          duration: 3000,
+        }}
       />
     </div>
   )

@@ -3,15 +3,16 @@ import dayjs from 'dayjs'
 import { useCanvasContext } from '../hooks/useCanvasContext'
 import { useOnPasteImage } from '../hooks/useOnPasteImage'
 import { useKeyPress } from '../hooks/useKeyPress'
-import { useStorageListen } from '../hooks/useStorageListen'
 import { getElementDimension, drawRoundedRect, drawText } from '../utils/canvas'
-import { settings } from '../utils/settings'
+import { useStore } from '../store'
 import { Popover } from './Popover'
+import { toast } from 'react-hot-toast'
 import * as t from '../types'
 
 const DEFAULT_RECT_ROUND = 3
 
 export function Canvas() {
+  const settings = useStore((state) => state.settings)
   const canvasRef = useRef<any>(null)
   const [elements, setElements] = useState<t.RenderedElement[]>([])
   const [focusedElementIndex, setFocsedElementIndex] = useState(0)
@@ -435,7 +436,7 @@ export function Canvas() {
 
   const getContext = useCanvasContext(canvasRef)
 
-  const renderCanvas = useCallback(() => {
+  useEffect(() => {
     const ctx = getContext()
     const canvas = canvasRef.current
     canvas.width = img.width
@@ -465,11 +466,7 @@ export function Canvas() {
         )
       }
     })
-  }, [elements, img, focusedElementIndex, isFocus, getContext])
-
-  useEffect(renderCanvas, [renderCanvas])
-
-  useStorageListen(renderCanvas)
+  }, [elements, img, focusedElementIndex, isFocus, getContext, settings])
 
   return (
     <>

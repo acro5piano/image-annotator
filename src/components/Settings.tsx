@@ -1,7 +1,9 @@
 import { Modal } from './Modal'
-import { settings, updateSettings } from '../utils/settings'
+import { useStore } from '../store'
 import { useForm } from 'react-hook-form'
 import { forwardRef } from 'react'
+import toast from 'react-hot-toast'
+import { DEFAULT_SETTINGS } from '../utils/settings'
 
 export function Settings({
   visible,
@@ -10,9 +12,13 @@ export function Settings({
   visible: boolean
   onClose: () => void
 }) {
+  const settings = useStore((store) => store.settings)
+  const updateSettings = useStore((store) => store.updateSettings)
+
   const {
     register,
     handleSubmit,
+    reset,
     // formState: { errors, },
   } = useForm({
     defaultValues: settings,
@@ -21,6 +27,7 @@ export function Settings({
   const onSubmit = handleSubmit((input) => {
     updateSettings(input)
     onClose()
+    toast.success('Saved!')
   })
 
   return (
@@ -54,9 +61,16 @@ export function Settings({
               required: 'Required',
             })}
           />
-          <div className="text-center">
+          <div className="flex justify-center gap-3">
+            <button
+              className="button is-secondary"
+              type="button"
+              onClick={() => reset(DEFAULT_SETTINGS)}
+            >
+              Restore default
+            </button>
             <button className="button is-primary" type="submit">
-              Save
+              Save settings
             </button>
           </div>
         </form>

@@ -1,6 +1,6 @@
 import * as t from '../types'
 
-import { settings } from '../utils/settings'
+import { getState } from '../store'
 
 export function drawRoundedRect(
   ctx: CanvasRenderingContext2D,
@@ -11,6 +11,7 @@ export function drawRoundedRect(
   radius: number,
   isFocused?: boolean,
 ) {
+  const settings = getState().settings
   ctx.beginPath()
   ctx.lineWidth = 8
   ctx.strokeStyle = isFocused ? settings.focusedColor : settings.primaryColor
@@ -34,6 +35,8 @@ export function drawText(
   content: string,
   isFocused?: boolean,
 ) {
+  const settings = getState().settings
+
   ctx.font = `bold ${fontSize}px sans`
 
   ctx.fillStyle = isFocused ? settings.focusedColor : settings.primaryColor

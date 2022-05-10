@@ -14,7 +14,7 @@ export function drawRoundedRect(
   const settings = getState().settings
   ctx.beginPath()
   ctx.lineWidth = 8
-  ctx.strokeStyle = isFocused ? settings.focusedColor : settings.primaryColor
+  ctx.strokeStyle = isFocused ? settings.secondaryColor : settings.primaryColor
   ctx.moveTo(x, y + radius)
   ctx.lineTo(x, y + height - radius)
   ctx.arcTo(x, y + height, x + radius, y + height, radius)
@@ -39,7 +39,7 @@ export function drawText(
 
   ctx.font = `bold ${fontSize}px sans`
 
-  ctx.fillStyle = isFocused ? settings.focusedColor : settings.primaryColor
+  ctx.fillStyle = isFocused ? settings.secondaryColor : settings.primaryColor
   ctx.fillText(content, x, y)
 
   ctx.strokeStyle = '#fff'

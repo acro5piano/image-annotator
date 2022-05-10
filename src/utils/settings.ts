@@ -2,7 +2,7 @@ export const DEFAULT_SETTINGS = {
   smallDiff: 10,
   largeDiff: 30,
   primaryColor: '#e91e63', // pink
-  focusedColor: '#fb5211', // orange
+  secondaryColor: '#fb5211', // orange
   isDarkMode: false,
 } as const
 

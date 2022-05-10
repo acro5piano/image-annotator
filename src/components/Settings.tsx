@@ -1,9 +1,9 @@
 import { Modal } from './Modal'
 import { useStore } from '../store'
 import { useForm } from 'react-hook-form'
-import { forwardRef } from 'react'
-import toast from 'react-hot-toast'
+import { forwardRef, useEffect } from 'react'
 import { DEFAULT_SETTINGS } from '../utils/settings'
+import { useDebounceFn } from 'ahooks'
 
 export function Settings({
   visible,
@@ -19,6 +19,7 @@ export function Settings({
     register,
     handleSubmit,
     reset,
+    watch,
     // formState: { errors, },
   } = useForm({
     defaultValues: settings,
@@ -26,9 +27,13 @@ export function Settings({
 
   const onSubmit = handleSubmit((input) => {
     updateSettings(input)
-    onClose()
-    toast.success('Saved!')
   })
+  const { run } = useDebounceFn(onSubmit, {
+    wait: 100,
+  })
+  useEffect(() => {
+    run()
+  }, [watch()])
 
   return (
     <Modal visible={visible} onClose={onClose} title="Settings">
@@ -62,6 +67,13 @@ export function Settings({
             })}
           />
           <TextField
+            label="Secondary color"
+            type="color"
+            {...register('secondaryColor', {
+              required: 'Required',
+            })}
+          />
+          <TextField
             label="Dark Mode"
             type="checkbox"
             defaultChecked={settings.isDarkMode}
@@ -71,12 +83,24 @@ export function Settings({
             <button
               className="button is-secondary"
               type="button"
-              onClick={() => reset(DEFAULT_SETTINGS)}
+              onClick={() => {
+                if (confirm('are you sure?')) {
+                  reset(DEFAULT_SETTINGS)
+                  onSubmit()
+                }
+              }}
             >
               Restore default
             </button>
-            <button className="button is-primary" type="submit">
-              Save settings
+            <button
+              className="button is-primary invert-if-dark"
+              type="button"
+              onClick={() => {
+                onSubmit()
+                onClose()
+              }}
+            >
+              Done
             </button>
           </div>
         </form>

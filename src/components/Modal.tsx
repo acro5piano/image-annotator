@@ -21,7 +21,10 @@ export function Modal({
       onClick={onClose}
     >
       {visible && (
-        <div className="w-8/12" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="w-8/12 invert-if-dark dark:border dark:shadow"
+          onClick={(e) => e.stopPropagation()}
+        >
           <header className="modal-card-head">
             <p className="modal-card-title">{title}</p>
             <button className="delete" aria-label="close" onClick={onClose} />

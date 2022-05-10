@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'react-hot-toast'
 import dayjs from 'dayjs'
 import { useCanvasContext } from 'src/hooks/useCanvasContext'
 import { useOnPasteImage } from 'src/hooks/useOnPasteImage'
@@ -59,6 +60,7 @@ export function Canvas() {
       const item = new ClipboardItem({ 'image/png': blob })
       // @ts-ignore
       navigator.clipboard.write([item])
+      toast.success('Copied to clipboard')
     })
   })
 
@@ -468,7 +470,7 @@ export function Canvas() {
     <>
       <canvas ref={canvasRef} className="canvas" />
       {!isPasted && (
-        <div className="border border-gray-200 bg-white flex justify-center items-center rounded paste-image-here ">
+        <div className="border border-gray-200 bg-white flex justify-center items-center rounded paste-image-here invert-if-dark ">
           <span>Please paste image to start (Ctrl + V)</span>
         </div>
       )}

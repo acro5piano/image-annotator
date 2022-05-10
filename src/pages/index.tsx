@@ -36,8 +36,8 @@ export default function Page() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-200 ">
-      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md ">
+    <div className="min-h-screen bg-gray-200 dark:bg-zinc-900">
+      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md invert-if-dark ">
         <div className="flex items-center font-bold ">Image Annotator</div>
         <div className="flex items-center">
           <button

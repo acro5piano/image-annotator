@@ -10,15 +10,18 @@ interface Store {
   settings: Settings
   initApplication: () => void
   updateSettings: (settings: Settings) => void
+  isInitialized: boolean
 }
 
 export const useStore = create<Store>((set) => ({
+  isInitialized: false,
   settings: DEFAULT_SETTINGS,
   initApplication() {
     const settings = getSettings()
     if (settings) {
       set({ settings })
     }
+    set({ isInitialized: true })
   },
   updateSettings(settings: Settings) {
     updateSettings(settings)

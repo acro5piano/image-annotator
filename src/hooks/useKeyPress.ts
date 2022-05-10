@@ -4,7 +4,11 @@ function plain(s: string) {
   return s.replace('ctrl.', '').replace('meta.', '').replace('shift.', '')
 }
 
-export function useKeyPress(keys: string[], callback: () => void) {
+export function useKeyPress(
+  keys: string[],
+  callback: () => void,
+  preventDefault = true,
+) {
   const [inputing, setInputing] = useState(false)
 
   useEffect(() => {
@@ -35,6 +39,9 @@ export function useKeyPress(keys: string[], callback: () => void) {
           (!key.includes('shift') && event.shiftKey) ||
           plain(key) !== event.key
         ) {
+          if (preventDefault) {
+            event.preventDefault()
+          }
           return false
         }
         callback()

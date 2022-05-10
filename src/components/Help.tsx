@@ -6,6 +6,10 @@ const shortcuts = [
     key: 'Ctrl + v',
     description: 'Paste the image from clipboard to the canvas',
   },
+  {
+    key: 'Shift + d / Ctrl + s',
+    description: 'Download the image',
+  },
   { key: 'Ctrl + c', description: 'Copy the image on the canvas to clipboard' },
   { key: 'r', description: 'Add a rectangle on the canvas' },
   {
@@ -112,11 +116,7 @@ export function Help({
   onClose: () => void
 }) {
   return (
-    <Modal visible={visible} onClose={onClose}>
-      <header className="modal-card-head">
-        <p className="modal-card-title">Keyboard shortcuts</p>
-        <button className="delete" aria-label="close" onClick={onClose} />
-      </header>
+    <Modal visible={visible} onClose={onClose} title="Keyboard shortcuts">
       <div
         className="bg-white p-4 overflow-y-scroll w-full"
         style={{ maxHeight: '60vh' }}

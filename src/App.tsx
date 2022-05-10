@@ -2,6 +2,7 @@ import { Canvas } from './components/Canvas'
 import { useState } from 'react'
 import { useLocalStorageState } from 'ahooks'
 import { Help } from './components/Help'
+import { Settings } from './components/Settings'
 import { QuickHelp } from './components/QuickHelp'
 import { useKeyPress } from './hooks/useKeyPress'
 import { useOnPasteImage } from './hooks/useOnPasteImage'
@@ -12,8 +13,14 @@ export function App() {
     true,
   )
   const [isQuickHelpVisible, setIsQuickHelpVisible] = useState(false)
-  useKeyPress(['shift.?'], () => setIsHelpVisible(true))
-  useKeyPress(['Escape'], () => setIsHelpVisible(false))
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false)
+  useKeyPress(['shift.?', 'F1'], () => setIsHelpVisible(true))
+  useKeyPress([','], () => setIsSettingsVisible(true))
+
+  useKeyPress(['Escape'], () => {
+    setIsHelpVisible(false)
+    setIsSettingsVisible(false)
+  })
 
   useOnPasteImage(() => {
     setIsQuickHelpVisible(true)
@@ -24,18 +31,33 @@ export function App() {
       <nav className="px-8 py-2 bg-gray-900 flex justify-between items-center fixed top-0 w-full text-xl">
         <div className="text-white flex items-center">Image Annotator</div>
         <div className="flex items-center">
-          <div
-            className="text-white cursor-pointe flex items-center text-white hover:bg-indigo-700 hover:text-white px-2 py-1 cursor-pointer"
-            onClick={() => setIsHelpVisible(true)}
+          <button
+            onClick={(e) => {
+              setIsHelpVisible(true)
+              e.currentTarget.blur()
+            }}
           >
-            How to use
-            <code className="rounded ml-2 text-xs">?</code>
-          </div>
+            <div className="text-white flex items-center transition-all hover:bg-gray-800 px-2 py-1 rounded">
+              How to use
+              <code className="rounded ml-2 text-xs">?</code>
+            </div>
+          </button>
+          <button
+            onClick={(e) => {
+              e.currentTarget.blur()
+              setIsHelpVisible(true)
+            }}
+          >
+            <div className="text-white cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded">
+              Settings
+              <code className="rounded ml-2 text-xs">,</code>
+            </div>
+          </button>
           <a
             href="https://github.com/acro5piano/image-annotator"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-8 px-2 py-1 text-white hover:bg-indigo-700 hover:text-white rounded"
+            className="ml-8 px-2 py-1 text-white hover:text-white transition-all hover:bg-gray-800 rounded"
           >
             GitHub
           </a>
@@ -48,6 +70,10 @@ export function App() {
       <Help
         visible={isHelpVisible || false}
         onClose={() => setIsHelpVisible(false)}
+      />
+      <Settings
+        visible={isSettingsVisible || false}
+        onClose={() => setIsSettingsVisible(false)}
       />
     </div>
   )

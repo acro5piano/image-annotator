@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import dayjs from 'dayjs'
 import { useLocalStorageState } from 'ahooks'
 import { useCanvasContext } from '../hooks/useCanvasContext'
 import { useOnPasteImage } from '../hooks/useOnPasteImage'
@@ -73,6 +74,15 @@ export function Canvas() {
         setCopied(false)
       }, 4000)
     })
+  })
+
+  useKeyPress(['shift.D', 'ctrl.s'], () => {
+    const canvas = canvasRef.current
+    var link = document.createElement('a')
+    // prettier-ignore
+    link.download = `image-annotator-com-${dayjs().format('YYYYMMDD-HHmmss')}.png`
+    link.href = canvas.toDataURL()
+    link.click()
   })
 
   useKeyPress(['r'], () => {

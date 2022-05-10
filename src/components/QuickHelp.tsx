@@ -19,6 +19,7 @@ export function QuickHelp() {
           k="Ctrl + Shift + &larr;&uarr;&darr;&rarr;"
           desc="Resize a little"
         />
+        <Desc k="?" desc="Help" />
       </div>
     </div>
   )

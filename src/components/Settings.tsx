@@ -94,7 +94,7 @@ export function Settings({
             </button>
             <button
               className="button is-primary invert-if-dark"
-              type="button"
+              type="submit"
               onClick={() => {
                 onSubmit()
                 onClose()

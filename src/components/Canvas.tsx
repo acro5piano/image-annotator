@@ -76,14 +76,18 @@ export function Canvas() {
     })
   })
 
-  useKeyPress(['shift.D', 'ctrl.s'], () => {
-    const canvas = canvasRef.current
-    var link = document.createElement('a')
-    // prettier-ignore
-    link.download = `image-annotator-com-${dayjs().format('YYYYMMDD-HHmmss')}.png`
-    link.href = canvas.toDataURL()
-    link.click()
-  })
+  useKeyPress(
+    ['shift.D', 'ctrl.s'],
+    () => {
+      const canvas = canvasRef.current
+      var link = document.createElement('a')
+      // prettier-ignore
+      link.download = `image-annotator-com-${dayjs().format('YYYYMMDD-HHmmss')}.png`
+      link.href = canvas.toDataURL()
+      link.click()
+    },
+    true,
+  )
 
   useKeyPress(['r'], () => {
     const { width, height } = canvasRef.current
@@ -482,7 +486,7 @@ export function Canvas() {
     <>
       <canvas ref={canvasRef} className="canvas" />
       {!isPasted && (
-        <div className="border border-gray-400 bg-white flex justify-center items-center rounded paste-image-here">
+        <div className="border border-gray-200 bg-white flex justify-center items-center rounded paste-image-here">
           <span>Please paste image to start (Ctrl + V)</span>
         </div>
       )}

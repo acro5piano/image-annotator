@@ -7,7 +7,7 @@ function plain(s: string) {
 export function useKeyPress(
   keys: string[],
   callback: () => void,
-  preventDefault = true,
+  preventDefault = false,
 ) {
   const [inputing, setInputing] = useState(false)
 
@@ -50,5 +50,5 @@ export function useKeyPress(
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [keys, callback, inputing])
+  }, [keys, callback, inputing, preventDefault])
 }

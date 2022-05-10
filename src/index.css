@@ -7,6 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #e5e5e5;
   min-height: 100vh;
+  color: #1f2937; /* Tailwind's text-gray-800 */
 }
 
 code {
@@ -17,8 +18,14 @@ code {
 .paste-image-here {
   height: 80vh;
   font-size: 48px;
+  color: #1e293b;
 }
 
 .canvas {
   margin: 24px auto 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }

@@ -28,8 +28,8 @@ export function App() {
 
   return (
     <div>
-      <nav className="px-8 py-2 bg-gray-900 flex justify-between items-center fixed top-0 w-full text-xl">
-        <div className="text-white flex items-center">Image Annotator</div>
+      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md">
+        <div className="flex items-center font-bold">Image Annotator</div>
         <div className="flex items-center">
           <button
             onClick={(e) => {
@@ -37,9 +37,11 @@ export function App() {
               e.currentTarget.blur()
             }}
           >
-            <div className="text-white flex items-center transition-all hover:bg-gray-800 px-2 py-1 rounded">
+            <div className="flex items-center transition-all hover:bg-gray-200 px-3 py-2 rounded">
               How to use
-              <code className="rounded ml-2 text-xs">?</code>
+              <code className="text-white bg-gray-600 rounded ml-2 text-xs">
+                ?
+              </code>
             </div>
           </button>
           <button
@@ -48,16 +50,18 @@ export function App() {
               setIsHelpVisible(true)
             }}
           >
-            <div className="text-white cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded">
+            <div className="cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded">
               Settings
-              <code className="rounded ml-2 text-xs">,</code>
+              <code className="text-white bg-gray-600 rounded ml-2 text-xs">
+                ,
+              </code>
             </div>
           </button>
           <a
             href="https://github.com/acro5piano/image-annotator"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-8 px-2 py-1 text-white hover:text-white transition-all hover:bg-gray-800 rounded"
+            className="ml-8 px-2 py-1 transition-all hover:bg-gray-800 rounded"
           >
             GitHub
           </a>

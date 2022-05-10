@@ -39,10 +39,10 @@ export function useKeyPress(
           (!key.includes('shift') && event.shiftKey) ||
           plain(key) !== event.key
         ) {
-          if (preventDefault) {
-            event.preventDefault()
-          }
           return false
+        }
+        if (preventDefault) {
+          event.preventDefault()
         }
         callback()
         return true

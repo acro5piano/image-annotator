@@ -14,8 +14,8 @@ export function Modal({
   return (
     <div
       className={clsx(
-        'fixed top-0 left-0 w-full flex justify-center items-center bg-gray-800 h-screen',
-        !visible && 'hidden',
+        'fixed top-0 left-0 w-full flex justify-center items-center bg-gray-800',
+        visible ? ' h-screen' : 'h-0 hidden',
       )}
       style={{ background: 'rgba(0,0,0,0.7)' }}
       onClick={onClose}

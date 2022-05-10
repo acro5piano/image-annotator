@@ -9,9 +9,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #e5e5e5;
-  min-height: 100vh;
   color: #1f2937; /* Tailwind's text-gray-800 */
+  height: 100%;
 }
 
 code {

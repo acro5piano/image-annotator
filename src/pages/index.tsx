@@ -16,7 +16,7 @@ export default function Page() {
 
   const [isHelpVisible, setIsHelpVisible] = useLocalStorageState(
     'ia:isHelpVisible',
-    true,
+    typeof window !== 'undefined',
   )
   const [isQuickHelpVisible, setIsQuickHelpVisible] = useState(false)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -36,9 +36,9 @@ export default function Page() {
   })
 
   return (
-    <div>
-      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md">
-        <div className="flex items-center font-bold">Image Annotator</div>
+    <div className="min-h-screen bg-gray-200 ">
+      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md ">
+        <div className="flex items-center font-bold ">Image Annotator</div>
         <div className="flex items-center">
           <button
             onClick={(e) => {
@@ -46,7 +46,7 @@ export default function Page() {
               e.currentTarget.blur()
             }}
           >
-            <div className="flex items-center transition-all hover:bg-gray-200 px-3 py-2 rounded">
+            <div className="flex items-center transition-all hover:bg-gray-200 px-3 py-2 rounded ">
               How to use
               <code className="text-white bg-gray-600 rounded ml-2 text-xs">
                 ?
@@ -59,7 +59,7 @@ export default function Page() {
               setIsHelpVisible(true)
             }}
           >
-            <div className="cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded">
+            <div className="cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded ">
               Settings
               <code className="text-white bg-gray-600 rounded ml-2 text-xs">
                 ,
@@ -70,7 +70,7 @@ export default function Page() {
             href="https://github.com/acro5piano/image-annotator"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-8 px-2 py-1 transition-all hover:bg-gray-800 rounded"
+            className="ml-8 px-2 py-1 transition-all hover:bg-gray-800 rounded "
           >
             GitHub
           </a>

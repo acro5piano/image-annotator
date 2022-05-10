@@ -61,6 +61,12 @@ export function Settings({
               required: 'Required',
             })}
           />
+          <TextField
+            label="Dark Mode"
+            type="checkbox"
+            defaultChecked={settings.isDarkMode}
+            {...register('isDarkMode', {})}
+          />
           <div className="flex justify-center gap-3">
             <button
               className="button is-secondary"

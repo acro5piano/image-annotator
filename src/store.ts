@@ -26,5 +26,13 @@ export const useStore = create<Store>((set) => ({
   },
 }))
 
+useStore.subscribe((state) => {
+  if (state.settings.isDarkMode) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+})
+
 // To surppress ESLint error
 export const getState = () => useStore.getState()

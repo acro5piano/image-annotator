@@ -11,12 +11,13 @@ import { Toaster } from 'react-hot-toast'
 
 export default function Page() {
   const initApplication = useStore((store) => store.initApplication)
+  const isInitialized = useStore((store) => store.isInitialized)
 
   useMount(initApplication)
 
   const [isHelpVisible, setIsHelpVisible] = useLocalStorageState(
     'ia:isHelpVisible',
-    typeof window !== 'undefined',
+    true,
   )
   const [isQuickHelpVisible, setIsQuickHelpVisible] = useState(false)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -81,7 +82,7 @@ export default function Page() {
       </div>
       {isQuickHelpVisible && <QuickHelp />}
       <Help
-        visible={isHelpVisible || false}
+        visible={isHelpVisible! && isInitialized}
         onClose={() => setIsHelpVisible(false)}
       />
       <Settings

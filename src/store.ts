@@ -31,8 +31,10 @@ export const useStore = create<Store>((set) => ({
 
 useStore.subscribe((state) => {
   if (state.settings.isDarkMode) {
+    localStorage.theme = 'dark'
     document.documentElement.classList.add('dark')
   } else {
+    localStorage.theme = 'light'
     document.documentElement.classList.remove('dark')
   }
 })

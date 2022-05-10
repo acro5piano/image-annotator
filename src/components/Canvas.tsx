@@ -8,6 +8,7 @@ import {
   getElementDimension,
   drawRoundedRect,
   drawText,
+  drawArrow,
 } from 'src/utils/canvas'
 import { useStore } from 'src/store'
 import * as t from 'src/types'
@@ -22,6 +23,7 @@ export function Canvas() {
   const [isFocus, setIsFocus] = useState(false)
   const [isInputVisilble, setIsInputVisible] = useState(false)
   const [isPasted, setIsPasted] = useState(false)
+  const [currentInputValue, setCurrentInputValue] = useState('')
 
   const img = useOnPasteImage(() => {
     setIsPasted(true)
@@ -78,10 +80,27 @@ export function Canvas() {
     setElements([
       ...elements,
       {
+        type: 'RECT',
         x: width / 3,
         y: height / 3,
         w: width / 3,
         h: height / 3,
+      },
+    ])
+    setFocsedElementIndex(elements.length)
+    setIsFocus(true)
+  })
+
+  useKeyPress(['a'], () => {
+    const { width, height } = canvasRef.current
+    setElements([
+      ...elements,
+      {
+        type: 'ARROW',
+        x: width / 3,
+        y: height / 3,
+        w: width / 4,
+        h: height / 4,
       },
     ])
     setFocsedElementIndex(elements.length)
@@ -100,6 +119,7 @@ export function Canvas() {
     setElements([
       ...elements,
       {
+        type: 'TEXT',
         x,
         y,
         content: 'Content...',
@@ -108,6 +128,7 @@ export function Canvas() {
     ])
     setFocsedElementIndex(elements.length)
     setIsFocus(true)
+    setCurrentInputValue('')
     setTimeout(() => {
       setIsInputVisible(true)
     }, 10)
@@ -115,6 +136,7 @@ export function Canvas() {
 
   useKeyPress(['Escape'], () => {
     setIsFocus(false)
+    setIsInputVisible(false)
   })
 
   useKeyPress(['Enter', 'Return', 'i'], () => {
@@ -122,6 +144,7 @@ export function Canvas() {
     const focusedElement = elements[focusedElementIndex]
     if (t.isText(focusedElement)) {
       // Adding delay prevents to inserting "i"
+      setCurrentInputValue(focusedElement.content)
       setTimeout(() => {
         setIsInputVisible(true)
       }, 10)
@@ -331,7 +354,7 @@ export function Canvas() {
   useKeyPress(['shift.L', 'shift.ArrowRight'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               w: element.w + settings.largeDiff,
@@ -344,7 +367,7 @@ export function Canvas() {
   useKeyPress(['shift.H', 'shift.ArrowLeft'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               w: element.w - settings.largeDiff,
@@ -357,7 +380,7 @@ export function Canvas() {
   useKeyPress(['shift.K', 'shift.ArrowUp'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               h: element.h - settings.largeDiff,
@@ -370,7 +393,7 @@ export function Canvas() {
   useKeyPress(['shift.J', 'shift.ArrowDown'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               h: element.h + settings.largeDiff,
@@ -383,7 +406,7 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowRight'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               w: element.w + settings.smallDiff,
@@ -396,7 +419,7 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowLeft'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               w: element.w - settings.smallDiff,
@@ -409,7 +432,7 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowUp'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               h: element.h - settings.smallDiff,
@@ -422,7 +445,7 @@ export function Canvas() {
   useKeyPress(['ctrl.shift.ArrowDown'], () => {
     setElements(
       elements.map((element, idx) =>
-        idx === focusedElementIndex && t.isRectangle(element)
+        idx === focusedElementIndex && t.isAbleToResize(element)
           ? {
               ...element,
               h: element.h + settings.smallDiff,
@@ -463,6 +486,9 @@ export function Canvas() {
           isFocus && index === focusedElementIndex,
         )
       }
+      if (t.isArrow(element)) {
+        drawArrow(ctx, element, isFocus && index === focusedElementIndex)
+      }
     })
   }, [elements, img, focusedElementIndex, isFocus, getContext, settings])
 
@@ -476,7 +502,11 @@ export function Canvas() {
       )}
       {isInputVisilble && (
         <form onSubmit={onSubmit}>
-          <input onChange={onChangeText} autoFocus />
+          <input
+            onChange={onChangeText}
+            defaultValue={currentInputValue}
+            autoFocus
+          />
         </form>
       )}
     </>

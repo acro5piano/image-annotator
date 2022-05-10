@@ -14,6 +14,9 @@ export function useKeyPress(
     const handler = () => {
       setInputing((st) => !st)
     }
+    if (keys.includes('Escape')) {
+      return () => {}
+    }
     document.addEventListener('focusin', handler)
     document.addEventListener('focusout', handler)
     return () => {

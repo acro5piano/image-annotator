@@ -35,6 +35,7 @@ export default function Document() {
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css"
         />
+        <script async src="/canvas-arrow.js" />
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-BC8E2GS7SX"

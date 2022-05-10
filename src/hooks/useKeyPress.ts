@@ -6,8 +6,7 @@ function plain(s: string) {
 
 export function useKeyPress(
   keys: string[],
-  callback: () => void,
-  preventDefault = false,
+  callback: (event: KeyboardEvent) => void,
 ) {
   const [inputing, setInputing] = useState(false)
 
@@ -41,14 +40,11 @@ export function useKeyPress(
         ) {
           return false
         }
-        if (preventDefault) {
-          event.preventDefault()
-        }
-        callback()
+        callback(event)
         return true
       })
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [keys, callback, inputing, preventDefault])
+  }, [keys, callback, inputing])
 }

@@ -15,7 +15,10 @@ export function App() {
   const [isQuickHelpVisible, setIsQuickHelpVisible] = useState(false)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
   useKeyPress(['shift.?', 'F1'], () => setIsHelpVisible(true))
-  useKeyPress([','], () => setIsSettingsVisible(true))
+  useKeyPress([','], (event) => {
+    event.preventDefault()
+    setIsSettingsVisible(true)
+  })
 
   useKeyPress(['Escape'], () => {
     setIsHelpVisible(false)

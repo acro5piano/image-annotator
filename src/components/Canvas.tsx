@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import dayjs from 'dayjs'
-import { useLocalStorageState } from 'ahooks'
 import { useCanvasContext } from '../hooks/useCanvasContext'
 import { useOnPasteImage } from '../hooks/useOnPasteImage'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { getElementDimension, drawRoundedRect, drawText } from '../utils/canvas'
+import { settings } from '../utils/settings'
 import { Popover } from './Popover'
 import * as t from '../types'
 
-const DEFAULT_SMALL_DIFF = 10
-const DEFAULT_LARGE_DIFF = 30
 const DEFAULT_RECT_ROUND = 3
 
 export function Canvas() {
@@ -20,16 +18,6 @@ export function Canvas() {
   const [isInputVisilble, setIsInputVisible] = useState(false)
   const [isPasted, setIsPasted] = useState(false)
   const [copied, setCopied] = useState(false)
-
-  // TODO: make them configurable
-  const [smallDiff = DEFAULT_SMALL_DIFF] = useLocalStorageState(
-    'ia:smallDiff',
-    DEFAULT_SMALL_DIFF,
-  )
-  const [largeDiff = DEFAULT_LARGE_DIFF] = useLocalStorageState(
-    'ia:largeDiff',
-    DEFAULT_LARGE_DIFF,
-  )
 
   const img = useOnPasteImage(() => {
     setIsPasted(true)
@@ -76,18 +64,14 @@ export function Canvas() {
     })
   })
 
-  useKeyPress(
-    ['shift.D', 'ctrl.s'],
-    () => {
-      const canvas = canvasRef.current
-      var link = document.createElement('a')
-      // prettier-ignore
-      link.download = `image-annotator-com-${dayjs().format('YYYYMMDD-HHmmss')}.png`
-      link.href = canvas.toDataURL()
-      link.click()
-    },
-    true,
-  )
+  useKeyPress(['shift.D', 'ctrl.s'], (event) => {
+    event.preventDefault()
+    const link = document.createElement('a')
+    // prettier-ignore
+    link.download = `image-annotator-com-${dayjs().format('YYYYMMDD-HHmmss')}.png`
+    link.href = canvasRef.current.toDataURL()
+    link.click()
+  })
 
   useKeyPress(['r'], () => {
     const { width, height } = canvasRef.current
@@ -185,7 +169,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x + smallDiff,
+              x: element.x + settings.smallDiff,
             }
           : element,
       ),
@@ -198,7 +182,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x - smallDiff,
+              x: element.x - settings.smallDiff,
             }
           : element,
       ),
@@ -211,7 +195,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y + smallDiff,
+              y: element.y + settings.smallDiff,
             }
           : element,
       ),
@@ -224,7 +208,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y - smallDiff,
+              y: element.y - settings.smallDiff,
             }
           : element,
       ),
@@ -237,7 +221,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x + largeDiff,
+              x: element.x + settings.largeDiff,
             }
           : element,
       ),
@@ -250,7 +234,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              x: element.x - largeDiff,
+              x: element.x - settings.largeDiff,
             }
           : element,
       ),
@@ -263,7 +247,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y + largeDiff,
+              y: element.y + settings.largeDiff,
             }
           : element,
       ),
@@ -276,7 +260,7 @@ export function Canvas() {
         idx === focusedElementIndex
           ? {
               ...element,
-              y: element.y - largeDiff,
+              y: element.y - settings.largeDiff,
             }
           : element,
       ),
@@ -350,7 +334,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w + largeDiff,
+              w: element.w + settings.largeDiff,
             }
           : element,
       ),
@@ -363,7 +347,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w - largeDiff,
+              w: element.w - settings.largeDiff,
             }
           : element,
       ),
@@ -376,7 +360,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h - largeDiff,
+              h: element.h - settings.largeDiff,
             }
           : element,
       ),
@@ -389,7 +373,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h + largeDiff,
+              h: element.h + settings.largeDiff,
             }
           : element,
       ),
@@ -402,7 +386,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w + smallDiff,
+              w: element.w + settings.smallDiff,
             }
           : element,
       ),
@@ -415,7 +399,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              w: element.w - smallDiff,
+              w: element.w - settings.smallDiff,
             }
           : element,
       ),
@@ -428,7 +412,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h - smallDiff,
+              h: element.h - settings.smallDiff,
             }
           : element,
       ),
@@ -441,7 +425,7 @@ export function Canvas() {
         idx === focusedElementIndex && t.isRectangle(element)
           ? {
               ...element,
-              h: element.h + smallDiff,
+              h: element.h + settings.smallDiff,
             }
           : element,
       ),

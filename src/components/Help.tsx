@@ -122,7 +122,7 @@ export function Help({
         style={{ maxHeight: '60vh' }}
       >
         {shortcuts.map((shortcut) => (
-          <div className="flex py-2 border-b">
+          <div className="flex py-2 border-b" key={shortcut.key}>
             <div className="w-4/12">
               {shortcut.key.split(' / ').map((key) => (
                 <code className="ml-4 bg-gray-600 text-white rounded">

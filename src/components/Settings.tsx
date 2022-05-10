@@ -1,6 +1,5 @@
-import { useLocalStorageState } from 'ahooks'
 import { Modal } from './Modal'
-import * as constants from '../constants'
+import { settings, updateSettings } from '../utils/settings'
 import { useForm } from 'react-hook-form'
 import { forwardRef } from 'react'
 
@@ -11,29 +10,16 @@ export function Settings({
   visible: boolean
   onClose: () => void
 }) {
-  const [smallDiff, setSmallDiff] = useLocalStorageState(
-    constants.LOCAL_STORAGE_KEY.SMALL_DIFF,
-    constants.DEFAULT_SMALL_DIFF,
-  )
-  const [largeDiff, setLargeDiff] = useLocalStorageState(
-    constants.LOCAL_STORAGE_KEY.LARGE_DIFF,
-    constants.DEFAULT_LARGE_DIFF,
-  )
-
   const {
     register,
     handleSubmit,
     // formState: { errors, },
   } = useForm({
-    defaultValues: {
-      smallDiff,
-      largeDiff,
-    },
+    defaultValues: settings,
   })
 
   const onSubmit = handleSubmit((input) => {
-    setSmallDiff(input.smallDiff)
-    setLargeDiff(input.largeDiff)
+    updateSettings(input)
     onClose()
   })
 
@@ -44,8 +30,23 @@ export function Settings({
         style={{ maxHeight: '60vh' }}
       >
         <form onSubmit={onSubmit}>
-          <TextField label="Small diff" {...register('smallDiff')} />
-          <TextField label="Large diff" {...register('largeDiff')} />
+          <TextField
+            label="Distance for small movements"
+            type="number"
+            {...register('smallDiff', {
+              valueAsNumber: true,
+              required: 'Required',
+            })}
+            autoFocus
+          />
+          <TextField
+            label="Distance for large movements"
+            type="number"
+            {...register('largeDiff', {
+              valueAsNumber: true,
+              required: 'Required',
+            })}
+          />
           <div className="text-center">
             <button className="button is-primary" type="submit">
               Save
@@ -57,20 +58,22 @@ export function Settings({
   )
 }
 
-const TextField = forwardRef<HTMLInputElement, { label: string }>(
-  ({ label, ...props }, ref) => {
-    return (
+const TextField = forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement> & { label: string }
+>(({ label, ...props }, ref) => {
+  return (
+    <div className="my-4">
       <label>
         <div className="flex items-center">
-          <div className="w-32">{label}</div>
+          <div className="w-64">{label}</div>
           <input
             ref={ref}
             {...props}
             className="border border-gray-200 p-1 rounded"
-            autoFocus
           />
         </div>
       </label>
-    )
-  },
-)
+    </div>
+  )
+})

@@ -1,3 +1,5 @@
+import clsx from 'clsx'
+
 export function Modal({
   visible,
   children,
@@ -11,8 +13,11 @@ export function Modal({
 }) {
   return (
     <div
-      className="fixed top-0 left-0 w-full flex justify-center items-center bg-gray-800"
-      style={{ height: visible ? '100vh' : 0, background: 'rgba(0,0,0,0.7)' }}
+      className={clsx(
+        'fixed top-0 left-0 w-full flex justify-center items-center bg-gray-800 h-screen',
+        !visible && 'hidden',
+      )}
+      style={{ background: 'rgba(0,0,0,0.7)' }}
       onClick={onClose}
     >
       {visible && (

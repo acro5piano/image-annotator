@@ -2,7 +2,8 @@
   <img src="./public/logo192.png" width="192">
 </div>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/d965a765-5e54-4b61-9fc6-6cc57f60fc43/deploy-status)](https://app.netlify.com/sites/awesome-image-annotator/deploys)
+![vercel](https://vercelbadge.vercel.app/api/acro5piano/image-annotator)
+[![test](https://github.com/acro5piano/image-annotator/actions/workflows/test.yml/badge.svg)](https://github.com/acro5piano/image-annotator/actions/workflows/test.yml)
 
 # Image Annotator
 

@@ -1,7 +1,6 @@
 import * as t from '../types'
 
-const FOCUSED_COLOR = '#fb5211'
-const ELEMENT_COLOR = '#e91e63'
+import { settings } from '../utils/settings'
 
 export function drawRoundedRect(
   ctx: CanvasRenderingContext2D,
@@ -14,7 +13,7 @@ export function drawRoundedRect(
 ) {
   ctx.beginPath()
   ctx.lineWidth = 8
-  ctx.strokeStyle = isFocused ? FOCUSED_COLOR : ELEMENT_COLOR
+  ctx.strokeStyle = isFocused ? settings.focusedColor : settings.primaryColor
   ctx.moveTo(x, y + radius)
   ctx.lineTo(x, y + height - radius)
   ctx.arcTo(x, y + height, x + radius, y + height, radius)
@@ -37,7 +36,7 @@ export function drawText(
 ) {
   ctx.font = `bold ${fontSize}px sans`
 
-  ctx.fillStyle = isFocused ? FOCUSED_COLOR : ELEMENT_COLOR
+  ctx.fillStyle = isFocused ? settings.focusedColor : settings.primaryColor
   ctx.fillText(content, x, y)
 
   ctx.strokeStyle = '#fff'

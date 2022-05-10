@@ -47,6 +47,13 @@ export function Settings({
               required: 'Required',
             })}
           />
+          <TextField
+            label="Primary color"
+            type="color"
+            {...register('primaryColor', {
+              required: 'Required',
+            })}
+          />
           <div className="text-center">
             <button className="button is-primary" type="submit">
               Save

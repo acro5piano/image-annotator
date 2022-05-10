@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { useCanvasContext } from '../hooks/useCanvasContext'
 import { useOnPasteImage } from '../hooks/useOnPasteImage'
 import { useKeyPress } from '../hooks/useKeyPress'
+import { useStorageListen } from '../hooks/useStorageListen'
 import { getElementDimension, drawRoundedRect, drawText } from '../utils/canvas'
 import { settings } from '../utils/settings'
 import { Popover } from './Popover'
@@ -434,7 +435,7 @@ export function Canvas() {
 
   const getContext = useCanvasContext(canvasRef)
 
-  useEffect(() => {
+  const renderCanvas = useCallback(() => {
     const ctx = getContext()
     const canvas = canvasRef.current
     canvas.width = img.width
@@ -465,6 +466,10 @@ export function Canvas() {
       }
     })
   }, [elements, img, focusedElementIndex, isFocus, getContext])
+
+  useEffect(renderCanvas, [renderCanvas])
+
+  useStorageListen(renderCanvas)
 
   return (
     <>

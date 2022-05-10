@@ -1,3 +1,5 @@
+import { emit } from '../hooks/useStorageListen'
+
 export interface Settings {
   smallDiff: number
   largeDiff: number
@@ -24,4 +26,5 @@ if (settingsString) {
 export function updateSettings(s: Settings) {
   localStorage.setItem(KEY, JSON.stringify(s))
   settings = s
+  emit()
 }

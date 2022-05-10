@@ -125,7 +125,7 @@ export function Help({
           <div className="flex py-2 border-b" key={shortcut.key}>
             <div className="w-4/12">
               {shortcut.key.split(' / ').map((key) => (
-                <code className="ml-4 bg-gray-600 text-white rounded">
+                <code className="ml-4 bg-gray-600 text-white rounded" key={key}>
                   {key}
                 </code>
               ))}

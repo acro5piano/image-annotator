@@ -35,3 +35,14 @@ export function useOnPasteImage(callback?: (img: HTMLImageElement) => any) {
 
   return image
 }
+
+export function useOnPasteImageLight(callback?: () => any) {
+  useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    document.addEventListener('paste', onPaste)
+    return () => document.removeEventListener('paste', onPaste)
+  }, [callback])
+}

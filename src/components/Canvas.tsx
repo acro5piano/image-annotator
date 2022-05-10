@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import dayjs from 'dayjs'
-import { useCanvasContext } from '../hooks/useCanvasContext'
-import { useOnPasteImage } from '../hooks/useOnPasteImage'
-import { useKeyPress } from '../hooks/useKeyPress'
-import { getElementDimension, drawRoundedRect, drawText } from '../utils/canvas'
-import { useStore } from '../store'
-import { Popover } from './Popover'
-import { toast } from 'react-hot-toast'
-import * as t from '../types'
+import { useCanvasContext } from 'src/hooks/useCanvasContext'
+import { useOnPasteImage } from 'src/hooks/useOnPasteImage'
+import { useKeyPress } from 'src/hooks/useKeyPress'
+import {
+  getElementDimension,
+  drawRoundedRect,
+  drawText,
+} from 'src/utils/canvas'
+import { useStore } from 'src/store'
+import * as t from 'src/types'
 
 const DEFAULT_RECT_ROUND = 3
 
@@ -19,7 +21,6 @@ export function Canvas() {
   const [isFocus, setIsFocus] = useState(false)
   const [isInputVisilble, setIsInputVisible] = useState(false)
   const [isPasted, setIsPasted] = useState(false)
-  const [copied, setCopied] = useState(false)
 
   const img = useOnPasteImage(() => {
     setIsPasted(true)
@@ -58,11 +59,6 @@ export function Canvas() {
       const item = new ClipboardItem({ 'image/png': blob })
       // @ts-ignore
       navigator.clipboard.write([item])
-
-      setCopied(true)
-      setTimeout(() => {
-        setCopied(false)
-      }, 4000)
     })
   })
 
@@ -481,7 +477,6 @@ export function Canvas() {
           <input onChange={onChangeText} autoFocus />
         </form>
       )}
-      <Popover visible={copied} message="Copied to clipboard" />
     </>
   )
 }

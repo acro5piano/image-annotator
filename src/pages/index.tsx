@@ -1,15 +1,15 @@
-import { Canvas } from './components/Canvas'
+import { Canvas } from 'src/components/Canvas'
 import { useState } from 'react'
 import { useLocalStorageState, useMount } from 'ahooks'
-import { Help } from './components/Help'
-import { Settings } from './components/Settings'
-import { QuickHelp } from './components/QuickHelp'
-import { useKeyPress } from './hooks/useKeyPress'
-import { useOnPasteImage } from './hooks/useOnPasteImage'
-import { useStore } from './store'
+import { Help } from 'src/components/Help'
+import { Settings } from 'src/components/Settings'
+import { QuickHelp } from 'src/components/QuickHelp'
+import { useKeyPress } from 'src/hooks/useKeyPress'
+import { useOnPasteImageLight } from 'src/hooks/useOnPasteImage'
+import { useStore } from 'src/store'
 import { Toaster } from 'react-hot-toast'
 
-export function App() {
+export default function Page() {
   const initApplication = useStore((store) => store.initApplication)
 
   useMount(initApplication)
@@ -31,7 +31,7 @@ export function App() {
     setIsSettingsVisible(false)
   })
 
-  useOnPasteImage(() => {
+  useOnPasteImageLight(() => {
     setIsQuickHelpVisible(true)
   })
 
@@ -77,7 +77,7 @@ export function App() {
         </div>
       </nav>
       <div className="pt-16 p-8">
-        <Canvas />
+        {typeof window !== 'undefined' && <Canvas />}
       </div>
       {isQuickHelpVisible && <QuickHelp />}
       <Help

@@ -7,7 +7,7 @@ const Desc = ({ k, desc }: { k: string; desc: string }) => (
 
 export function QuickHelp() {
   return (
-    <div className="fixed left-0 bottom-0 w-full py-2">
+    <div className="fixed left-0 bottom-0 w-full py-2 invert-if-dark">
       <div className="flex items-center justify-end">
         <Desc k="r" desc="Rectangle" />
         <Desc k="t" desc="Text" />

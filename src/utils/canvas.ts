@@ -14,7 +14,7 @@ export function drawRoundedRect(
   const settings = getState().settings
   ctx.beginPath()
   ctx.lineWidth = 8
-  ctx.strokeStyle = isFocused ? settings.focusedColor : settings.primaryColor
+  ctx.strokeStyle = isFocused ? settings.secondaryColor : settings.primaryColor
   ctx.moveTo(x, y + radius)
   ctx.lineTo(x, y + height - radius)
   ctx.arcTo(x, y + height, x + radius, y + height, radius)
@@ -27,6 +27,23 @@ export function drawRoundedRect(
   ctx.stroke()
 }
 
+export function drawArrow(
+  ctx: CanvasRenderingContext2D,
+  element: t.Arrow,
+  isFocused?: boolean,
+) {
+  const settings = getState().settings
+  const style = isFocused ? settings.secondaryColor : settings.primaryColor
+  ctx.beginPath()
+  ctx.lineWidth = 8
+  ctx.lineCap = 'round'
+  ctx.strokeStyle = style
+  // @ts-ignore
+  ctx.arrow(element.x, element.y, element.w, element.h, [0, 1, -10, 1, -15, 10])
+  ctx.fill()
+  ctx.stroke()
+}
+
 export function drawText(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -36,16 +53,12 @@ export function drawText(
   isFocused?: boolean,
 ) {
   const settings = getState().settings
-
   ctx.font = `bold ${fontSize}px sans`
-
-  ctx.fillStyle = isFocused ? settings.focusedColor : settings.primaryColor
+  ctx.fillStyle = isFocused ? settings.secondaryColor : settings.primaryColor
   ctx.fillText(content, x, y)
-
   ctx.strokeStyle = '#fff'
   ctx.lineWidth = fontSize / 37
   ctx.lineCap = 'round'
-
   ctx.strokeText(content, x, y)
 }
 

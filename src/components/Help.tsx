@@ -2,6 +2,7 @@ import { Modal } from './Modal'
 
 const shortcuts = [
   { key: '?', description: 'Open this cheatsheet' },
+  { key: ',', description: 'Open settings menu' },
   {
     key: 'Ctrl + v',
     description: 'Paste the image from clipboard to the canvas',
@@ -12,6 +13,7 @@ const shortcuts = [
   },
   { key: 'Ctrl + c', description: 'Copy the image on the canvas to clipboard' },
   { key: 'r', description: 'Add a rectangle on the canvas' },
+  { key: 'a', description: 'Add an arrow on the canvas' },
   {
     key: 't',
     description:
@@ -19,7 +21,7 @@ const shortcuts = [
   },
   { key: 'o', description: 'Focus next element on canvas' },
   { key: 'Escape', description: 'Clear focus' },
-  { key: 'i', description: 'Edit focused text' },
+  { key: 'i / Enter', description: 'Edit focused text' },
   {
     key: 'l / Ctrl + Arrow Right',
     description: 'Move current element to right by 10',
@@ -125,7 +127,7 @@ export function Help({
           <div className="flex py-2 border-b" key={shortcut.key}>
             <div className="w-4/12">
               {shortcut.key.split(' / ').map((key) => (
-                <code className="ml-4 bg-gray-600 text-white rounded">
+                <code className="ml-4 bg-gray-600 text-white rounded" key={key}>
                   {key}
                 </code>
               ))}

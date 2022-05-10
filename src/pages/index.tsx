@@ -1,22 +1,22 @@
-import { Canvas } from './components/Canvas'
+import { Canvas } from 'src/components/Canvas'
 import { useState } from 'react'
 import { useLocalStorageState, useMount } from 'ahooks'
-import { Help } from './components/Help'
-import { Settings } from './components/Settings'
-import { QuickHelp } from './components/QuickHelp'
-import { useKeyPress } from './hooks/useKeyPress'
-import { useOnPasteImage } from './hooks/useOnPasteImage'
-import { useStore } from './store'
+import { Help } from 'src/components/Help'
+import { Settings } from 'src/components/Settings'
+import { QuickHelp } from 'src/components/QuickHelp'
+import { useKeyPress } from 'src/hooks/useKeyPress'
+import { useOnPasteImageLight } from 'src/hooks/useOnPasteImage'
+import { useStore } from 'src/store'
 import { Toaster } from 'react-hot-toast'
 
-export function App() {
+export default function Page() {
   const initApplication = useStore((store) => store.initApplication)
 
   useMount(initApplication)
 
   const [isHelpVisible, setIsHelpVisible] = useLocalStorageState(
     'ia:isHelpVisible',
-    true,
+    typeof window !== 'undefined',
   )
   const [isQuickHelpVisible, setIsQuickHelpVisible] = useState(false)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -31,14 +31,14 @@ export function App() {
     setIsSettingsVisible(false)
   })
 
-  useOnPasteImage(() => {
+  useOnPasteImageLight(() => {
     setIsQuickHelpVisible(true)
   })
 
   return (
-    <div>
-      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md">
-        <div className="flex items-center font-bold">Image Annotator</div>
+    <div className="min-h-screen bg-gray-200 dark:bg-zinc-900">
+      <nav className="px-8 py-2 flex justify-between items-center fixed top-0 w-full text-lg bg-white border-b border-gray-50 shadow-md invert-if-dark ">
+        <div className="flex items-center font-bold ">Image Annotator</div>
         <div className="flex items-center">
           <button
             onClick={(e) => {
@@ -46,7 +46,7 @@ export function App() {
               e.currentTarget.blur()
             }}
           >
-            <div className="flex items-center transition-all hover:bg-gray-200 px-3 py-2 rounded">
+            <div className="flex items-center transition-all hover:bg-gray-200 px-3 py-2 rounded ">
               How to use
               <code className="text-white bg-gray-600 rounded ml-2 text-xs">
                 ?
@@ -59,7 +59,7 @@ export function App() {
               setIsHelpVisible(true)
             }}
           >
-            <div className="cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded">
+            <div className="cursor-pointe flex items-center transition-all hover:bg-gray-800 px-2 py-1 cursor-pointer rounded ">
               Settings
               <code className="text-white bg-gray-600 rounded ml-2 text-xs">
                 ,
@@ -70,14 +70,14 @@ export function App() {
             href="https://github.com/acro5piano/image-annotator"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-8 px-2 py-1 transition-all hover:bg-gray-800 rounded"
+            className="ml-8 px-2 py-1 transition-all hover:bg-gray-800 rounded "
           >
             GitHub
           </a>
         </div>
       </nav>
       <div className="pt-16 p-8">
-        <Canvas />
+        {typeof window !== 'undefined' && <Canvas />}
       </div>
       {isQuickHelpVisible && <QuickHelp />}
       <Help

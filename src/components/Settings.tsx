@@ -1,4 +1,5 @@
 import { Modal } from './Modal'
+import clsx from 'clsx'
 import { useStore } from '../store'
 import { useForm } from 'react-hook-form'
 import { forwardRef, useEffect } from 'react'
@@ -62,6 +63,7 @@ export function Settings({
           <TextField
             label="Primary color"
             type="color"
+            invertColor
             {...register('primaryColor', {
               required: 'Required',
             })}
@@ -69,6 +71,7 @@ export function Settings({
           <TextField
             label="Secondary color"
             type="color"
+            invertColor
             {...register('secondaryColor', {
               required: 'Required',
             })}
@@ -111,18 +114,23 @@ export function Settings({
 
 const TextField = forwardRef<
   HTMLInputElement,
-  React.InputHTMLAttributes<HTMLInputElement> & { label: string }
->(({ label, ...props }, ref) => {
+  React.InputHTMLAttributes<HTMLInputElement> & {
+    label: string
+    invertColor?: boolean
+  }
+>(({ label, invertColor = false, ...props }, ref) => {
   return (
     <div className="my-4">
       <label>
-        <div className="flex items-center">
+        <div className={clsx('flex items-center')}>
           <div className="w-64">{label}</div>
-          <input
-            ref={ref}
-            {...props}
-            className="border border-gray-200 p-1 rounded"
-          />
+          <span className={invertColor ? 'invert-if-dark' : ''}>
+            <input
+              ref={ref}
+              {...props}
+              className="border border-gray-200 p-1 rounded"
+            />
+          </span>
         </div>
       </label>
     </div>

@@ -17,7 +17,8 @@ jobs:
         with:
           path: |
             node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
       - run: |
-          yarn install
-          yarn tsc
+          npm -g install pnpm
+          pnpm install
+          pnpm tsc

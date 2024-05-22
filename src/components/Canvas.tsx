@@ -9,6 +9,7 @@ import {
   drawRoundedRect,
   drawText,
   drawArrow,
+  drawFilledRect,
 } from 'src/utils/canvas'
 import { useStore } from 'src/store'
 import * as t from 'src/types'
@@ -85,6 +86,24 @@ export function Canvas() {
         y: height / 3,
         w: width / 3,
         h: height / 3,
+      },
+    ])
+    setFocsedElementIndex(elements.length)
+    setIsFocus(true)
+  })
+
+  useKeyPress(['shift.R'], () => {
+    const { width, height } = canvasRef.current
+    setElements([
+      ...elements,
+      {
+        type: 'FILLED_RECT',
+        x: width / 3,
+        y: height / 3,
+        w: width / 3,
+        h: height / 3,
+        // TODO: enable to change this
+        fill: '#000',
       },
     ])
     setFocsedElementIndex(elements.length)
@@ -474,6 +493,16 @@ export function Canvas() {
           element.h,
           DEFAULT_RECT_ROUND,
           isFocus && index === focusedElementIndex,
+        )
+      }
+      if (t.isFilledRectangle(element)) {
+        drawFilledRect(
+          ctx,
+          element.x,
+          element.y,
+          element.w,
+          element.h,
+          element.fill,
         )
       }
       if (t.isText(element)) {

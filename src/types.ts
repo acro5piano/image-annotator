@@ -13,6 +13,17 @@ export function isRectangle(e: any): e is Rectangle {
   return e.type === 'RECT'
 }
 
+export interface FilledRectangle extends CanvasElement {
+  type: 'FILLED_RECT'
+  w: number
+  h: number
+  fill: string
+}
+
+export function isFilledRectangle(e: any): e is FilledRectangle {
+  return e.type === 'FILLED_RECT'
+}
+
 export interface Text extends CanvasElement {
   type: 'TEXT'
   content: string
@@ -34,7 +45,7 @@ export function isArrow(e: any): e is Arrow {
 }
 
 export function isAbleToResize(e: any): e is Rectangle {
-  return isRectangle(e) || isArrow(e)
+  return isRectangle(e) || isArrow(e) || isFilledRectangle(e)
 }
 
-export type RenderedElement = Rectangle | Text | Arrow
+export type RenderedElement = Rectangle | Text | Arrow | FilledRectangle

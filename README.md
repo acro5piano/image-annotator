@@ -30,6 +30,7 @@ https://image-annotator.com
 | C-v                               | Paste the image from clipboard to the canvas                                         |
 | C-c                               | Copy the image on the canvas to clipboard                                            |
 | r                                 | Add a rectangle on the canvas                                                        |
+| R                                 | Add a filled rectangle on the canvas (e.g. hide something)                           |
 | t                                 | Add a text on the canvas. If a rectangle is focused, put the text on the above of it |
 | o                                 | Focus next element on canvas                                                         |
 | Escape                            | Clear focus                                                                          |
@@ -65,3 +66,10 @@ https://image-annotator.com
 ![image](https://user-images.githubusercontent.com/10719495/113324768-07368600-9307-11eb-801f-1052370db16d.png)
 
 ![image](https://user-images.githubusercontent.com/10719495/113316314-b706f600-92fd-11eb-8f83-e11dfd4f9a94.png)
+
+# Development
+
+```
+pnpm install
+pnpm dev
+```

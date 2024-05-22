@@ -27,6 +27,19 @@ export function drawRoundedRect(
   ctx.stroke()
 }
 
+export function drawFilledRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  fill: string,
+) {
+  ctx.fillStyle = fill
+  // ctx.filter = 'blur(4px)'
+  ctx.fillRect(x, y, width, height)
+}
+
 export function drawArrow(
   ctx: CanvasRenderingContext2D,
   element: t.Arrow,

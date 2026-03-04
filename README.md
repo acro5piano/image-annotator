@@ -20,7 +20,7 @@ A tool to edit images by keyboard. Especially useful when you add some descripti
 
 Go to the website, and paste your image from clipboard.
 
-https://image-annotator.com
+https://image-annotator.vercel.app
 
 # Shortcuts
 

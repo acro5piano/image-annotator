@@ -10,6 +10,7 @@ export function QuickHelp() {
     <div className="fixed left-0 bottom-0 w-full py-2 invert-if-dark">
       <div className="flex items-center justify-end">
         <Desc k="r" desc="Rectangle" />
+        <Desc k="m" desc="Redact" />
         <Desc k="t" desc="Text" />
         <Desc k="o" desc="select Other" />
         <Desc k="&larr;&uarr;&darr;&rarr;" desc="Move" />

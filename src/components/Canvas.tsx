@@ -10,6 +10,7 @@ import {
   drawText,
   drawArrow,
   drawFilledRect,
+  drawRedact,
 } from 'src/utils/canvas'
 import { useStore } from 'src/store'
 import * as t from 'src/types'
@@ -104,6 +105,22 @@ export function Canvas() {
         h: height / 3,
         // TODO: enable to change this
         fill: '#000',
+      },
+    ])
+    setFocsedElementIndex(elements.length)
+    setIsFocus(true)
+  })
+
+  useKeyPress(['m'], () => {
+    const { width, height } = canvasRef.current
+    setElements([
+      ...elements,
+      {
+        type: 'REDACT',
+        x: width / 3,
+        y: height / 3,
+        w: width / 3,
+        h: height / 3,
       },
     ])
     setFocsedElementIndex(elements.length)
@@ -512,6 +529,16 @@ export function Canvas() {
           element.y,
           element.fontSize,
           element.content,
+          isFocus && index === focusedElementIndex,
+        )
+      }
+      if (t.isRedact(element)) {
+        drawRedact(
+          ctx,
+          element.x,
+          element.y,
+          element.w,
+          element.h,
           isFocus && index === focusedElementIndex,
         )
       }

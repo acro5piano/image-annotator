@@ -20,6 +20,9 @@ export function QuickHelp() {
           k="Ctrl + Shift + &larr;&uarr;&darr;&rarr;"
           desc="Resize a little"
         />
+        <Desc k="c" desc="Copy" />
+        <Desc k="v" desc="Paste" />
+        <Desc k="Ctrl+z" desc="Undo" />
         <Desc k="?" desc="Help" />
       </div>
     </div>

@@ -27,6 +27,7 @@ export function Canvas() {
   const [isInputVisilble, setIsInputVisible] = useState(false)
   const [isPasted, setIsPasted] = useState(false)
   const [currentInputValue, setCurrentInputValue] = useState('')
+  const clipboardRef = useRef<t.RenderedElement | null>(null)
 
   const img = useOnPasteImage(() => {
     setIsPasted(true)
@@ -67,6 +68,24 @@ export function Canvas() {
       navigator.clipboard.write([item])
       toast.success('Copied to clipboard')
     })
+  })
+
+  useKeyPress(['c', 'y'], () => {
+    const focusedElement = elements[focusedElementIndex]
+    if (focusedElement) {
+      clipboardRef.current = { ...focusedElement }
+      toast.success('Copied element')
+    }
+  })
+
+  useKeyPress(['v', 'p'], () => {
+    const copied = clipboardRef.current
+    if (copied) {
+      const newElement = { ...copied, x: copied.x + 20, y: copied.y + 20 }
+      setElements([...elements, newElement])
+      setFocsedElementIndex(elements.length)
+      setIsFocus(true)
+    }
   })
 
   useKeyPress(['ctrl.z', 'meta.z'], (event) => {

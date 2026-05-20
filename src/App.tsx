@@ -9,7 +9,7 @@ import { useOnPasteImageLight } from 'src/hooks/useOnPasteImage'
 import { useStore } from 'src/store'
 import { Toaster } from 'react-hot-toast'
 
-export default function Page() {
+export default function App() {
   const initApplication = useStore((store) => store.initApplication)
   const isInitialized = useStore((store) => store.isInitialized)
 
@@ -78,7 +78,7 @@ export default function Page() {
         </div>
       </nav>
       <div className="pt-16 p-8">
-        {typeof window !== 'undefined' && <Canvas />}
+        <Canvas />
       </div>
       {isQuickHelpVisible && <QuickHelp />}
       {isInitialized && (

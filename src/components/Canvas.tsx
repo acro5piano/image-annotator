@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { useCanvasContext } from 'src/hooks/useCanvasContext'
 import { useOnPasteImage } from 'src/hooks/useOnPasteImage'
 import { useKeyPress } from 'src/hooks/useKeyPress'
+import { useHistory } from 'src/hooks/useHistory'
 import {
   getElementDimension,
   drawRoundedRect,
@@ -20,7 +21,7 @@ const DEFAULT_RECT_ROUND = 3
 export function Canvas() {
   const settings = useStore((state) => state.settings)
   const canvasRef = useRef<any>(null)
-  const [elements, setElements] = useState<t.RenderedElement[]>([])
+  const [elements, setElements, undo, redo] = useHistory<t.RenderedElement[]>([])
   const [focusedElementIndex, setFocsedElementIndex] = useState(0)
   const [isFocus, setIsFocus] = useState(false)
   const [isInputVisilble, setIsInputVisible] = useState(false)
@@ -66,6 +67,22 @@ export function Canvas() {
       navigator.clipboard.write([item])
       toast.success('Copied to clipboard')
     })
+  })
+
+  useKeyPress(['ctrl.z', 'meta.z'], (event) => {
+    event.preventDefault()
+    const prev = undo()
+    if (prev) {
+      setFocsedElementIndex(Math.min(focusedElementIndex, Math.max(0, prev.length - 1)))
+    }
+  })
+
+  useKeyPress(['ctrl.shift.Z', 'meta.shift.Z'], (event) => {
+    event.preventDefault()
+    const next = redo()
+    if (next) {
+      setFocsedElementIndex(Math.min(focusedElementIndex, Math.max(0, next.length - 1)))
+    }
   })
 
   useKeyPress(['shift.D', 'ctrl.s'], (event) => {

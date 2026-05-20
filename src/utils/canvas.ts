@@ -66,13 +66,13 @@ export function drawText(
   isFocused?: boolean,
 ) {
   const settings = getState().settings
-  ctx.font = `bold ${fontSize}px sans`
-  ctx.fillStyle = isFocused ? settings.secondaryColor : settings.primaryColor
-  ctx.fillText(content, x, y)
+  ctx.font = `bold ${fontSize}px sans-serif`
   ctx.strokeStyle = '#fff'
   ctx.lineWidth = fontSize / 37
   ctx.lineCap = 'round'
   ctx.strokeText(content, x, y)
+  ctx.fillStyle = isFocused ? settings.secondaryColor : settings.primaryColor
+  ctx.fillText(content, x, y)
 }
 
 export function drawRedact(

@@ -44,8 +44,18 @@ export function isArrow(e: any): e is Arrow {
   return e.type === 'ARROW'
 }
 
-export function isAbleToResize(e: any): e is Rectangle {
-  return isRectangle(e) || isArrow(e) || isFilledRectangle(e)
+export interface Redact extends CanvasElement {
+  type: 'REDACT'
+  w: number
+  h: number
 }
 
-export type RenderedElement = Rectangle | Text | Arrow | FilledRectangle
+export function isRedact(e: any): e is Redact {
+  return e.type === 'REDACT'
+}
+
+export function isAbleToResize(e: any): e is Rectangle {
+  return isRectangle(e) || isArrow(e) || isFilledRectangle(e) || isRedact(e)
+}
+
+export type RenderedElement = Rectangle | Text | Arrow | FilledRectangle | Redact

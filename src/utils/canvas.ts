@@ -75,6 +75,71 @@ export function drawText(
   ctx.strokeText(content, x, y)
 }
 
+export function drawRedact(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  isFocused?: boolean,
+) {
+  const blockSize = 12
+  const ix = Math.max(0, Math.round(x))
+  const iy = Math.max(0, Math.round(y))
+  const iw = Math.round(width)
+  const ih = Math.round(height)
+
+  const canvas = ctx.canvas
+  const clampedW = Math.min(iw, canvas.width - ix)
+  const clampedH = Math.min(ih, canvas.height - iy)
+  if (clampedW <= 0 || clampedH <= 0) return
+
+  const imageData = ctx.getImageData(ix, iy, clampedW, clampedH)
+  const data = imageData.data
+
+  for (let by = 0; by < clampedH; by += blockSize) {
+    for (let bx = 0; bx < clampedW; bx += blockSize) {
+      const bw = Math.min(blockSize, clampedW - bx)
+      const bh = Math.min(blockSize, clampedH - by)
+      let r = 0,
+        g = 0,
+        b = 0,
+        count = 0
+      for (let py = by; py < by + bh; py++) {
+        for (let px = bx; px < bx + bw; px++) {
+          const i = (py * clampedW + px) * 4
+          r += data[i]!
+          g += data[i + 1]!
+          b += data[i + 2]!
+          count++
+        }
+      }
+      r = Math.round(r / count)
+      g = Math.round(g / count)
+      b = Math.round(b / count)
+      for (let py = by; py < by + bh; py++) {
+        for (let px = bx; px < bx + bw; px++) {
+          const i = (py * clampedW + px) * 4
+          data[i] = r
+          data[i + 1] = g
+          data[i + 2] = b
+        }
+      }
+    }
+  }
+
+  ctx.putImageData(imageData, ix, iy)
+
+  if (isFocused) {
+    const settings = getState().settings
+    ctx.strokeStyle = settings.secondaryColor
+    ctx.lineWidth = 4
+    ctx.setLineDash([8, 4])
+    ctx.strokeRect(ix, iy, clampedW, clampedH)
+    ctx.setLineDash([])
+  }
+}
+
 export function getElementDimension(elm: t.RenderedElement) {
   if (t.isRectangle(elm)) {
     return { w: elm.w, h: elm.h }

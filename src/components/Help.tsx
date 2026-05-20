@@ -13,6 +13,7 @@ const shortcuts = [
   },
   { key: 'Ctrl + c', description: 'Copy the image on the canvas to clipboard' },
   { key: 'r', description: 'Add a rectangle on the canvas' },
+  { key: 'm', description: 'Add a redact (mosaic) rectangle on the canvas' },
   { key: 'a', description: 'Add an arrow on the canvas' },
   {
     key: 't',
